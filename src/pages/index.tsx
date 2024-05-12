@@ -11,6 +11,11 @@ import styles from './index.module.css';
 //状態：時間で変化し保存される値=>board
 //状態はアプリを壊す
 //計算値：=>blackPoint boardから生成できる
+
+//盤面の大きさ
+const boardHeight: number = 9;
+const boardWidth: number = 9;
+
 const Home = () => {
   const [samplePos, setSamplePos] = useState(0);
 
@@ -27,9 +32,19 @@ const Home = () => {
   ]);
   const [userInputs, setUserInputs] = useState([]); //0~3 クリック 右クリック
   //合成
-  const board: number[][] = [];
-  for (let y = 0; y < 9; y++) {
-    for (let x = 0; x < 9; x++) {
+  const board: number[][] = [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  ];
+  for (let y = 0; y < boardHeight; y++) {
+    for (let x = 0; x < boardWidth; x++) {
       board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
     }
   }
@@ -51,13 +66,23 @@ const Home = () => {
 
   //useEffect 副作用を隔離する クリーンナップ 時計
   //1s毎に再描画
+  const clickHandler = (x: number, y: number) => {
+    console.log(x, y);
+  };
   return (
     <div className={styles.container}>
-      <div
+      <div className={styles.board}>
+        {board.map((row, y) =>
+          row.map((color, x) => (
+            <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
+          )),
+        )}
+      </div>
+      {/* <div
         className={styles.sampleStyle}
         style={{ backgroundPosition: `${samplePos * -30}px 0px` }} //cssスプライト
       />
-      <button onClick={() => setSamplePos((p) => (p + 1) % 14)}>sample</button>
+      <button onClick={() => setSamplePos((p) => (p + 1) % 14)}>sample</button> */}
     </div>
   );
 };
