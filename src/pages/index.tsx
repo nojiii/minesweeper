@@ -19,7 +19,7 @@ const Home = () => {
   //ボムの個数
   const bombNumber: number = 10;
 
-  const [samplePos, setSamplePos] = useState(0);
+  // const [samplePos, setSamplePos] = useState(0);
 
   const [bombMap, setBombMap] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,7 +32,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
-  const [userInputs, setUserInputs] = useState([]); //0~3 クリック 右クリック
+  // const [userInputs, setUserInputs] = useState([]); //0~3 クリック 右クリック
   //合成
   const board: number[][] = [
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -51,7 +51,7 @@ const Home = () => {
     }
   }
   //tsx board.map
-  console.log(samplePos);
+  // console.log(samplePos);
 
   //   //再帰関数 0連鎖
   //   const fn = (hikisuu) => {
