@@ -12,11 +12,13 @@ import styles from './index.module.css';
 //状態はアプリを壊す
 //計算値：=>blackPoint boardから生成できる
 
-//盤面の大きさ
-const boardHeight: number = 9;
-const boardWidth: number = 9;
-
 const Home = () => {
+  //盤面の大きさ
+  const boardHeight: number = 9;
+  const boardWidth: number = 9;
+  //ボムの個数
+  const bombNumber: number = 10;
+
   const [samplePos, setSamplePos] = useState(0);
 
   const [bombMap, setBombMap] = useState([
@@ -66,8 +68,38 @@ const Home = () => {
 
   //useEffect 副作用を隔離する クリーンナップ 時計
   //1s毎に再描画
+
+  //ゲーム開始時にbombmapを生成する関数(x, y, ^bombNumber ^boardHeight ^boardWidth)
+  function createBombMap(x: number, y: number) {
+    const newBombMap: number[][] = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    for (let i = 0; i < bombNumber; i++) {
+      let putBomb: boolean = false;
+      while (!putBomb) {
+        const randY: number = Math.floor(Math.random() * boardHeight);
+        const randX: number = Math.floor(Math.random() * boardWidth);
+        if ((randX !== x && randY !== y) || newBombMap[randY][randX] !== 1) {
+          newBombMap[randY][randX] = 1;
+          putBomb = true;
+        }
+      }
+    }
+    setBombMap(newBombMap);
+  }
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
+    createBombMap(x, y);
+    console.log(bombMap);
   };
   return (
     <div className={styles.container}>
