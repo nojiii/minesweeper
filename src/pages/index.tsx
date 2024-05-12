@@ -45,11 +45,11 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ];
-  for (let y = 0; y < boardHeight; y++) {
-    for (let x = 0; x < boardWidth; x++) {
-      board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
-    }
-  }
+  // for (let y = 0; y < boardHeight; y++) {
+  //   for (let x = 0; x < boardWidth; x++) {
+  //     board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
+  //   }
+  // }
   //tsx board.map
   // console.log(samplePos);
 
