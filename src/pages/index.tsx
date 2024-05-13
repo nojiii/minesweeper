@@ -18,7 +18,17 @@ const Home = () => {
   const boardWidth: number = 9;
   //ボムの個数
   const bombNumber: number = 10;
-
+  //方向
+  const directions: number[][] = [
+    [0, -1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1],
+  ];
   // const [samplePos, setSamplePos] = useState(0);
 
   const [bombMap, setBombMap] = useState([
@@ -96,10 +106,28 @@ const Home = () => {
     setBombMap(newBombMap);
   }
 
+  //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y ^bombMap ^directions)
+  function checkBombAround(x: number, y: number): number {
+    let count = 0;
+    directions.forEach((direction) => {
+      if (
+        -1 < x + direction[0] &&
+        x + direction[0] < bombMap[0].length &&
+        -1 < y + direction[1] &&
+        x + direction[1] < bombMap.length &&
+        bombMap[y + direction[1]][x + direction[0]] === 1
+      ) {
+        count++;
+      }
+    });
+    return count;
+  }
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     createBombMap(x, y);
     console.log(bombMap);
+    console.log(checkBombAround(x, y));
   };
   return (
     <div className={styles.container}>
