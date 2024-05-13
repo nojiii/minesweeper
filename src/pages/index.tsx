@@ -17,7 +17,7 @@ const Home = () => {
   const boardHeight: number = 9;
   const boardWidth: number = 9;
   //ボムの個数
-  const bombNumber: number = 10;
+  const bombQuantity: number = 10;
   //方向
   const directions: number[][] = [
     [0, -1],
@@ -44,7 +44,7 @@ const Home = () => {
   ]);
   // const [userInputs, setUserInputs] = useState([]); //0~3 クリック 右クリック
   //合成
-  const board: number[][] = [
+  const [board, setBoard] = useState([
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -54,7 +54,9 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ];
+  ]);
+  //ゲーム状況 0=未開始 1=進行中 2=クリア (予定)
+  const [gameState, setGameState] = useState(0);
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
   //     board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
@@ -79,7 +81,7 @@ const Home = () => {
   //useEffect 副作用を隔離する クリーンナップ 時計
   //1s毎に再描画
 
-  //ゲーム開始時にbombmapを生成する関数(x, y, ^bombNumber ^boardHeight ^boardWidth)
+  //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   function createBombMap(x: number, y: number) {
     const newBombMap: number[][] = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -92,12 +94,12 @@ const Home = () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
-    for (let i = 0; i < bombNumber; i++) {
+    for (let i = 0; i < bombQuantity; i++) {
       let putBomb: boolean = false;
       while (!putBomb) {
         const randY: number = Math.floor(Math.random() * boardHeight);
         const randX: number = Math.floor(Math.random() * boardWidth);
-        if ((randX !== x && randY !== y) || newBombMap[randY][randX] !== 1) {
+        if (randX !== x && randY !== y && newBombMap[randY][randX] !== 1) {
           newBombMap[randY][randX] = 1;
           putBomb = true;
         }
@@ -124,8 +126,14 @@ const Home = () => {
   }
 
   const clickHandler = (x: number, y: number) => {
+    //クリックした座標をconsoleに表示
     console.log(x, y);
-    createBombMap(x, y);
+    //BombMapの生成&GameStateを進行中に設定
+    if (gameState === 0) {
+      createBombMap(x, y);
+      setGameState(1);
+    }
+
     console.log(bombMap);
     console.log(checkBombAround(x, y));
   };
