@@ -116,7 +116,7 @@ const Home = () => {
         -1 < x + direction[0] &&
         x + direction[0] < bombMap[0].length &&
         -1 < y + direction[1] &&
-        x + direction[1] < bombMap.length &&
+        y + direction[1] < bombMap.length &&
         bombMap[y + direction[1]][x + direction[0]] === 1
       ) {
         count++;
