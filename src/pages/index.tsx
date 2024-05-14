@@ -124,15 +124,6 @@ const Home = () => {
     return count;
   };
 
-  //指定された座標にbombがあるか判定する関数(x ,y ^bombMap)
-  const checkBomb = (x: number, y: number): boolean => {
-    if (bombMap[y][x] === 1) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board)
   const cellOpen = (x: number, y: number) => {
     const newBoard = board.concat();
