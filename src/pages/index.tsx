@@ -191,11 +191,9 @@ const Home = () => {
               } else {
                 return (
                   <div
+                    className={styles.sampleStyle}
                     style={{
-                      width: '30px',
-                      height: '30px',
-                      // background: `${cellImage} no-repeat`,
-                      // backgroundPosition: `${board[y][x] * -30}px 0px`,
+                      backgroundPosition: `${(board[y][x] - 1) * -30}px 0px`,
                     }}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
