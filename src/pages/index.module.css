@@ -47,5 +47,14 @@
   width: 30px;
   height: 30px;
   background-color: #b2b2b2;
-  border: 1px solid #737373;
+  border-top: 1.8px solid #737373;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1.8px solid #737373;
+}
+
+.test {
+  width: 30px;
+  height: 30px;
+  background-color: red;
 }

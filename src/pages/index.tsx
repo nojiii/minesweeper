@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styles from './index.module.css';
-
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
 //初級～上級
@@ -136,32 +135,77 @@ const Home = () => {
 
   //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board)
   const cellOpen = (x: number, y: number) => {
-    const newBoard = board;
+    const newBoard = board.concat();
+    //cellが開いていないことを判定
     if (board[y][x] === -1) {
-      newBoard[y][x] = 0;
+      //指定した座標にbombがあるか判定
+      if (bombMap[y][x] === 1) {
+        newBoard[y][x] === 11;
+      } else {
+        if (checkBombAround(x, y) <= 0) {
+          newBoard[y][x] = 0;
+        } else {
+          newBoard[y][x] = checkBombAround(x, y);
+        }
+      }
       setBoard(newBoard);
     }
   };
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
-    console.log(x, y);
+    console.log('クリックした座標', x, y);
     //BombMapの生成&GameStateを進行中に設定
     if (gameState === 0) {
       createBombMap(x, y);
       setGameState(1);
     }
-
-    console.log(bombMap);
-    console.log(checkBombAround(x, y));
+    //cellを開く
+    cellOpen(x, y);
+    console.log('現在のboard', board);
+    console.log('ボムの位置のmap', bombMap);
+    console.log('クリックした座標の周りのボムの数', checkBombAround(x, y));
   };
   return (
     <div className={styles.container}>
       <div className={styles.board}>
         {board.map((row, y) =>
-          row.map((color, x) => (
-            <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
-          )),
+          row.map(
+            (cellType, x) => {
+              if (cellType === -1) {
+                return (
+                  <div
+                    className={styles.cell}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              } else if (cellType === 0) {
+                return (
+                  <div
+                    className={styles.open}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              } else {
+                return (
+                  <div
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      // background: `${cellImage} no-repeat`,
+                      // backgroundPosition: `${board[y][x] * -30}px 0px`,
+                    }}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              }
+            },
+
+            // <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
+          ),
         )}
       </div>
       {/* <div
