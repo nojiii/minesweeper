@@ -82,7 +82,7 @@ const Home = () => {
   //1s毎に再描画
 
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
-  function createBombMap(x: number, y: number) {
+  const createBombMap = (x: number, y: number) => {
     const newBombMap: number[][] = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -106,10 +106,10 @@ const Home = () => {
       }
     }
     setBombMap(newBombMap);
-  }
+  };
 
   //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y ^bombMap ^directions)
-  function checkBombAround(x: number, y: number): number {
+  const checkBombAround = (x: number, y: number): number => {
     let count = 0;
     directions.forEach((direction) => {
       if (
@@ -123,7 +123,25 @@ const Home = () => {
       }
     });
     return count;
-  }
+  };
+
+  //指定された座標にbombがあるか判定する関数(x ,y ^bombMap)
+  const checkBomb = (x: number, y: number): boolean => {
+    if (bombMap[y][x] === 1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board)
+  const cellOpen = (x: number, y: number) => {
+    const newBoard = board;
+    if (board[y][x] === -1) {
+      newBoard[y][x] = 0;
+      setBoard(newBoard);
+    }
+  };
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
