@@ -80,8 +80,35 @@ const Home = () => {
   //useEffect 副作用を隔離する クリーンナップ 時計
   //1s毎に再描画
 
+  // //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
+  // const createBombMap = (x: number, y: number) => {
+  //   const newBombMap: number[][] = [
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  //   ];
+  //   for (let i = 0; i < bombQuantity; i++) {
+  //     let putBomb: boolean = false;
+  //     while (!putBomb) {
+  //       const randY: number = Math.floor(Math.random() * boardHeight);
+  //       const randX: number = Math.floor(Math.random() * boardWidth);
+  //       if (randX !== x && randY !== y && newBombMap[randY][randX] !== 1) {
+  //         newBombMap[randY][randX] = 1;
+  //         putBomb = true;
+  //       }
+  //     }
+  //   }
+  //   setBombMap(newBombMap);
+  // };
+
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
-  const createBombMap = (x: number, y: number) => {
+  const createBombMap = (x: number, y: number): number[][] => {
     const newBombMap: number[][] = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -104,7 +131,7 @@ const Home = () => {
         }
       }
     }
-    setBombMap(newBombMap);
+    return newBombMap;
   };
 
   //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y ^bombMap ^directions)
@@ -124,8 +151,28 @@ const Home = () => {
     return count;
   };
 
-  //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board)
-  const cellOpen = (x: number, y: number) => {
+  //x,y座標を受け取りその座標の周り3~8マスが爆弾でない、そのマスに爆弾がないならtrue,そうでないならfalseを返す関数
+  const canRelease = (x: number, y: number): boolean => {
+    if (bombMap[y][x] === 1) {
+      return false;
+    } else {
+      directions.forEach((direction) => {
+        if (
+          -1 < x + direction[0] &&
+          x + direction[0] < bombMap[0].length &&
+          -1 < y + direction[1] &&
+          y + direction[1] < bombMap.length &&
+          bombMap[y + direction[1]][x + direction[0]] === 1
+        ) {
+          return false;
+        }
+      });
+      return true;
+    }
+  };
+
+  //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
+  const cellOpen = (x: number, y: number, bombMap: number[][]) => {
     const newBoard = board.concat();
     //cellが開いていないことを判定
     if (board[y][x] === -1) {
@@ -139,20 +186,71 @@ const Home = () => {
           newBoard[y][x] = checkBombAround(x, y);
         }
       }
-      setBoard(newBoard);
     }
+    //再帰
+    directions.forEach((direction) => {
+      if (
+        -1 < x + direction[0] &&
+        x + direction[0] < board[0].length &&
+        -1 < y + direction[1] &&
+        y + direction[1] < board.length &&
+        board[y + direction[1]][x + direction[0]] === -1 &&
+        canRelease(x + direction[0], y + direction[1])
+      ) {
+        cellOpen(x + direction[0], y + direction[1], bombMap);
+      }
+    });
+    setBoard(newBoard);
   };
+
+  //cellの状態を変える再帰用の関数
+  const makeCellMap = (x: number, y: number, bombMap: number[][]): number[][] => {};
+
+  // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
+  // const cellOpen = (x: number, y: number, bombMap: number[][]): number[][] => {
+  //   const newBoard = board.concat();
+  //   //cellが開いていないことを判定
+  //   if (newBoard[y][x] === -1) {
+  //     //指定した座標にbombがあるか判定
+  //     if (bombMap[y][x] === 1) {
+  //       newBoard[y][x] === 11;
+  //     } else {
+  //       if (checkBombAround(x, y) <= 0) {
+  //         newBoard[y][x] = 0;
+  //       } else {
+  //         newBoard[y][x] = checkBombAround(x, y);
+  //       }
+  //     }
+  //     setBoard(newBoard);
+  //   }
+  //   //再帰
+  //   directions.forEach((direction) => {
+  //     if (
+  //       -1 < x + direction[0] &&
+  //       x + direction[0] < board[0].length &&
+  //       -1 < y + direction[1] &&
+  //       y + direction[1] < board.length &&
+  //       board[y + direction[1]][x + direction[0]] === -1 &&
+  //       canRelease(x + direction[0], y + direction[1])
+  //     ) {
+  //       cellOpen(x + direction[0], y + direction[1], bombMap);
+  //     }
+  //   });
+  // };
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
     console.log('クリックした座標', x, y);
     //BombMapの生成&GameStateを進行中に設定
+    let newBombMap: number[][] = [];
     if (gameState === 0) {
-      createBombMap(x, y);
+      newBombMap = createBombMap(x, y);
+      setBombMap(newBombMap);
       setGameState(1);
     }
     //cellを開く
-    cellOpen(x, y);
+    cellOpen(x, y, newBombMap);
+
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);
     console.log('クリックした座標の周りのボムの数', checkBombAround(x, y));
