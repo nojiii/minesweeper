@@ -173,38 +173,59 @@ const Home = () => {
 
   //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
-    const newBoard = board.concat();
+    const newBoard = makeCellMap(x, y, bombMap, board);
+    setBoard(newBoard);
+  };
+
+  //cellの状態を変える再帰用の関数
+  const makeCellMap = (
+    x: number,
+    y: number,
+    bombMap: number[][],
+    board: number[][],
+  ): number[][] => {
+    let newBoard = board.concat();
     //cellが開いていないことを判定
-    if (board[y][x] === -1) {
+    if (newBoard[y][x] === -1) {
       //指定した座標にbombがあるか判定
-      if (bombMap[y][x] === 1) {
+      if (-1 < x && x < board[0].length && -1 < y && y < board.length && bombMap[y][x] === 1) {
         newBoard[y][x] === 11;
       } else {
         if (checkBombAround(x, y) <= 0) {
           newBoard[y][x] = 0;
+          directions.forEach((direction) => {
+            if (
+              -1 < x + direction[0] &&
+              x + direction[0] < board[0].length &&
+              -1 < y + direction[1] &&
+              y + direction[1] < board.length &&
+              board[y + direction[1]][x + direction[0]] === -1
+            ) {
+              newBoard[y + direction[1]][x + direction[0]] = checkBombAround(x, y);
+              newBoard = makeCellMap(x, y, bombMap, newBoard);
+            }
+          });
         } else {
           newBoard[y][x] = checkBombAround(x, y);
         }
       }
     }
-    //再帰
-    directions.forEach((direction) => {
-      if (
-        -1 < x + direction[0] &&
-        x + direction[0] < board[0].length &&
-        -1 < y + direction[1] &&
-        y + direction[1] < board.length &&
-        board[y + direction[1]][x + direction[0]] === -1 &&
-        canRelease(x + direction[0], y + direction[1])
-      ) {
-        cellOpen(x + direction[0], y + direction[1], bombMap);
-      }
-    });
-    setBoard(newBoard);
-  };
+    // //再帰
+    // directions.forEach((direction) => {
+    //   if (
+    //     -1 < x + direction[0] &&
+    //     x + direction[0] < board[0].length &&
+    //     -1 < y + direction[1] &&
+    //     y + direction[1] < board.length &&
+    //     board[y + direction[1]][x + direction[0]] === -1 &&
+    //     canRelease(x + direction[0], y + direction[1])
+    //   ) {
+    //     cellOpen(x + direction[0], y + direction[1], bombMap);
+    //   }
+    // });
 
-  //cellの状態を変える再帰用の関数
-  const makeCellMap = (x: number, y: number, bombMap: number[][]): number[][] => {};
+    return newBoard;
+  };
 
   // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
   // const cellOpen = (x: number, y: number, bombMap: number[][]): number[][] => {
