@@ -8,10 +8,14 @@
   padding: 0 0.5rem;
 }
 
-.sampleStyle {
+.spCell {
   width: 30px;
   height: 30px;
   background: url('~/src/assets/images/icons.png') no-repeat;
+  border-top: 1.8px solid #737373;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1.8px solid #737373;
 }
 
 /* background: url('../assets/images/icons.png') no-repeat; */

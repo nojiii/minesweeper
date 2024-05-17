@@ -172,19 +172,14 @@ const Home = () => {
   };
 
   //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
-  const cellOpen = (x: number, y: number, bombMap: number[][]) => {
-    const newBoard = makeCellMap(x, y, bombMap, board);
+  const cellOpen = (x: number, y: number) => {
+    const newBoard = makeCellMap(x, y, board);
     setBoard(newBoard);
   };
 
   //cellの状態を変える再帰用の関数
-  const makeCellMap = (
-    x: number,
-    y: number,
-    bombMap: number[][],
-    board: number[][],
-  ): number[][] => {
-    let newBoard = board.concat();
+  const makeCellMap = (x: number, y: number, board: number[][]): number[][] => {
+    const newBoard = board.concat();
     //cellが開いていないことを判定
     if (newBoard[y][x] === -1) {
       //指定した座標にbombがあるか判定
@@ -199,10 +194,10 @@ const Home = () => {
               x + direction[0] < board[0].length &&
               -1 < y + direction[1] &&
               y + direction[1] < board.length &&
-              board[y + direction[1]][x + direction[0]] === -1
+              board[y + direction[1]][x + direction[0]] === -1 &&
+              canRelease(x, y)
             ) {
               newBoard[y + direction[1]][x + direction[0]] = checkBombAround(x, y);
-              newBoard = makeCellMap(x, y, bombMap, newBoard);
             }
           });
         } else {
@@ -270,7 +265,7 @@ const Home = () => {
       setGameState(1);
     }
     //cellを開く
-    cellOpen(x, y, newBombMap);
+    cellOpen(x, y);
 
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);
@@ -301,7 +296,7 @@ const Home = () => {
               } else {
                 return (
                   <div
-                    className={styles.sampleStyle}
+                    className={styles.spCell}
                     style={{
                       backgroundPosition: `${(board[y][x] - 1) * -30}px 0px`,
                     }}
