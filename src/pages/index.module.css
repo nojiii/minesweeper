@@ -9,9 +9,10 @@
 }
 
 .spCell {
-  width: 30px;
-  height: 30px;
+  width: 8vh;
+  height: 8vh;
   background: url('~/src/assets/images/icons.png') no-repeat;
+  background-size: auto 100%;
   border-top: 1.8px solid #737373;
   border-right: none;
   border-bottom: none;
@@ -21,15 +22,19 @@
 /* background: url('../assets/images/icons.png') no-repeat; */
 .board {
   display: grid;
-  grid-template-columns: repeat(9, 30px);
-  width: 270px;
-  height: 270px;
+  grid-template-columns: repeat(9, 8vh);
+  width: 74vh;
+  height: 74vh;
   background-color: #b2b2b2;
+  border-top: 2.7px solid #737373;
+  border-right: 2.7px solid #e5e5e5;
+  border-bottom: 2.7px solid #e5e5e5;
+  border-left: 2.7px solid #737373;
 }
 
 .cell {
-  width: 30px;
-  height: 30px;
+  width: 8vh;
+  height: 8vh;
   background-color: #b2b2b2;
   border-top: 3.7px solid #e5e5e5;
   border-right: 3.7px solid #737373;
@@ -38,8 +43,8 @@
 }
 
 .cell:active {
-  width: 30px;
-  height: 30px;
+  width: 8vh;
+  height: 8vh;
   background-color: #b2b2b2;
   border-top: 1.8px solid #737373;
   border-right: none;
@@ -48,8 +53,8 @@
 }
 
 .open {
-  width: 30px;
-  height: 30px;
+  width: 8vh;
+  height: 8vh;
   background-color: #b2b2b2;
   border-top: 1.8px solid #737373;
   border-right: none;
@@ -57,8 +62,22 @@
   border-left: 1.8px solid #737373;
 }
 
-.test {
-  width: 30px;
-  height: 30px;
-  background-color: red;
+.outer {
+  padding: 2vh;
+  background-color: #b2b2b2;
+  border-top: 2.7px solid #e5e5e5;
+  border-right: 2.7px solid #737373;
+  border-bottom: 2.7px solid #737373;
+  border-left: 2.7px solid #e5e5e5;
+}
+
+.info {
+  width: 74vh;
+  height: 16vh;
+  margin-bottom: 1.5vh;
+  background-color: #adadad;
+  border-top: 2.7px solid #737373;
+  border-right: 2.7px solid #e5e5e5;
+  border-bottom: 2.7px solid #e5e5e5;
+  border-left: 2.7px solid #737373;
 }

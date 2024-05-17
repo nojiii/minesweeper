@@ -171,33 +171,46 @@ const Home = () => {
     }
   };
 
-  //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
-  const cellOpen = (x: number, y: number) => {
-    const newBoard = makeCellMap(x, y, board);
+  //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board bombMap ^directions)
+  const cellOpen = (x: number, y: number, bombMap: number[][]) => {
+    const newBoard = makeCellMap(x, y, board, bombMap);
     setBoard(newBoard);
   };
 
   //cellの状態を変える再帰用の関数
-  const makeCellMap = (x: number, y: number, board: number[][]): number[][] => {
-    const newBoard = board.concat();
+  const makeCellMap = (
+    x: number,
+    y: number,
+    board: number[][],
+    bombMap: number[][],
+  ): number[][] => {
+    //新しいboard
+    let newBoard = board.concat();
     //cellが開いていないことを判定
     if (newBoard[y][x] === -1) {
       //指定した座標にbombがあるか判定
-      if (-1 < x && x < board[0].length && -1 < y && y < board.length && bombMap[y][x] === 1) {
+      if (bombMap[y][x] === 1) {
         newBoard[y][x] === 11;
+        return newBoard;
+        //x,yにbombがないとき
       } else {
+        //周りにbombがないとき
         if (checkBombAround(x, y) <= 0) {
-          newBoard[y][x] = 0;
+          newBoard[y][x] = checkBombAround(x, y);
           directions.forEach((direction) => {
             if (
               -1 < x + direction[0] &&
               x + direction[0] < board[0].length &&
               -1 < y + direction[1] &&
               y + direction[1] < board.length &&
-              board[y + direction[1]][x + direction[0]] === -1 &&
-              canRelease(x, y)
+              board[y + direction[1]][x + direction[0]] === -1
             ) {
-              newBoard[y + direction[1]][x + direction[0]] = checkBombAround(x, y);
+              newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
+                x + direction[0],
+                y + direction[1],
+              );
+              //再帰
+              newBoard = makeCellMap(x + direction[0], y + direction[1], newBoard, bombMap);
             }
           });
         } else {
@@ -205,20 +218,6 @@ const Home = () => {
         }
       }
     }
-    // //再帰
-    // directions.forEach((direction) => {
-    //   if (
-    //     -1 < x + direction[0] &&
-    //     x + direction[0] < board[0].length &&
-    //     -1 < y + direction[1] &&
-    //     y + direction[1] < board.length &&
-    //     board[y + direction[1]][x + direction[0]] === -1 &&
-    //     canRelease(x + direction[0], y + direction[1])
-    //   ) {
-    //     cellOpen(x + direction[0], y + direction[1], bombMap);
-    //   }
-    // });
-
     return newBoard;
   };
 
@@ -263,9 +262,12 @@ const Home = () => {
       newBombMap = createBombMap(x, y);
       setBombMap(newBombMap);
       setGameState(1);
+      //cellを開く
+      cellOpen(x, y, newBombMap);
+    } else {
+      //cellを開く
+      cellOpen(x, y, bombMap);
     }
-    //cellを開く
-    cellOpen(x, y);
 
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);
@@ -273,49 +275,52 @@ const Home = () => {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.board}>
-        {board.map((row, y) =>
-          row.map(
-            (cellType, x) => {
-              if (cellType === -1) {
-                return (
-                  <div
-                    className={styles.cell}
-                    key={`${x}-${y}`}
-                    onClick={() => clickHandler(x, y)}
-                  />
-                );
-              } else if (cellType === 0) {
-                return (
-                  <div
-                    className={styles.open}
-                    key={`${x}-${y}`}
-                    onClick={() => clickHandler(x, y)}
-                  />
-                );
-              } else {
-                return (
-                  <div
-                    className={styles.spCell}
-                    style={{
-                      backgroundPosition: `${(board[y][x] - 1) * -30}px 0px`,
-                    }}
-                    key={`${x}-${y}`}
-                    onClick={() => clickHandler(x, y)}
-                  />
-                );
-              }
-            },
+      <div className={styles.outer}>
+        <div className={styles.info} />
+        <div className={styles.board}>
+          {board.map((row, y) =>
+            row.map(
+              (cellType, x) => {
+                if (cellType === -1) {
+                  return (
+                    <div
+                      className={styles.cell}
+                      key={`${x}-${y}`}
+                      onClick={() => clickHandler(x, y)}
+                    />
+                  );
+                } else if (cellType === 0) {
+                  return (
+                    <div
+                      className={styles.open}
+                      key={`${x}-${y}`}
+                      onClick={() => clickHandler(x, y)}
+                    />
+                  );
+                } else {
+                  return (
+                    <div
+                      className={styles.spCell}
+                      style={{
+                        backgroundPosition: `${(board[y][x] - 1) * -8}vh 0px`,
+                      }}
+                      key={`${x}-${y}`}
+                      onClick={() => clickHandler(x, y)}
+                    />
+                  );
+                }
+              },
 
-            // <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
-          ),
-        )}
-      </div>
-      {/* <div
+              // <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
+            ),
+          )}
+        </div>
+        {/* <div
         className={styles.sampleStyle}
         style={{ backgroundPosition: `${samplePos * -30}px 0px` }} //cssスプライト
       />
       <button onClick={() => setSamplePos((p) => (p + 1) % 14)}>sample</button> */}
+      </div>
     </div>
   );
 };
