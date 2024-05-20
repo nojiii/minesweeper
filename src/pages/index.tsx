@@ -253,6 +253,14 @@ const Home = () => {
   //   });
   // };
 
+  const cellOpen = (x: number, y: number) => {
+    const newBoard = board.concat();
+    if (bombMap[y][x] !== 1) {
+      newBoard[y][x] = checkBombAround(x, y);
+    }
+    setBoard(newBoard);
+  };
+
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
     console.log('クリックした座標', x, y);
@@ -268,6 +276,9 @@ const Home = () => {
       // //cellを開く
       // cellOpen(x, y, bombMap);
     }
+
+    //cellを開く
+    cellOpen(x, y);
 
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);

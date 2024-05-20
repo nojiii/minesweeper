@@ -23,8 +23,6 @@
 .board {
   display: grid;
   grid-template-columns: repeat(9, 8vh);
-  width: 74vh;
-  height: 74vh;
   background-color: #b2b2b2;
   border-top: 0.72vh solid #737373;
   border-right: 0.72vh solid #e5e5e5;
@@ -72,7 +70,6 @@
 }
 
 .info {
-  width: 74vh;
   height: 16vh;
   margin-bottom: 1.5vh;
   background-color: #adadad;
