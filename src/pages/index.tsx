@@ -288,7 +288,13 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.outer}>
         <div className={styles.info}>
+          <div className={styles.display}>
+            <div className={styles.bombDisplay} />
+          </div>
           <div className={styles.faceButton} />
+          <div className={styles.display}>
+            <div className={styles.timeDisplay} />
+          </div>
         </div>
         <div className={styles.board}>
           {board.map((row, y) =>

@@ -83,8 +83,9 @@
 }
 
 .faceButton {
-  width: 10vh;
-  height: 10vh;
+  width: 12vh;
+  height: 12vh;
+  margin: 0 8vh;
   background-image: url('../assets/images/face_unpressed.svg');
   background-repeat: no-repeat;
   background-size: contain;
@@ -92,4 +93,14 @@
 
 .faceButton:active {
   background-image: url('../assets/images/face_pressed.svg');
+}
+
+.display {
+  width: 21vh;
+  height: 12vh;
+  background-color: black;
+  border-top: 0.54vh solid #737373;
+  border-right: 0.54vh solid #e5e5e5;
+  border-bottom: 0.54vh solid #e5e5e5;
+  border-left: 0.54vh solid #737373;
 }
