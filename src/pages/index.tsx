@@ -80,33 +80,6 @@ const Home = () => {
   //useEffect 副作用を隔離する クリーンナップ 時計
   //1s毎に再描画
 
-  // //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
-  // const createBombMap = (x: number, y: number) => {
-  //   const newBombMap: number[][] = [
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  //   ];
-  //   for (let i = 0; i < bombQuantity; i++) {
-  //     let putBomb: boolean = false;
-  //     while (!putBomb) {
-  //       const randY: number = Math.floor(Math.random() * boardHeight);
-  //       const randX: number = Math.floor(Math.random() * boardWidth);
-  //       if (randX !== x && randY !== y && newBombMap[randY][randX] !== 1) {
-  //         newBombMap[randY][randX] = 1;
-  //         putBomb = true;
-  //       }
-  //     }
-  //   }
-  //   setBombMap(newBombMap);
-  // };
-
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   const createBombMap = (x: number, y: number): number[][] => {
     const newBombMap: number[][] = [
@@ -175,87 +148,6 @@ const Home = () => {
   };
 
   // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board bombMap ^directions)
-  // const cellOpen = (x: number, y: number, bombMap: number[][]) => {
-  //   const newBoard = makeCellMap(x, y, board, bombMap);
-  //   setBoard(newBoard);
-  // };
-
-  // //cellの状態を変える再帰用の関数
-  // const makeCellMap = (
-  //   x: number,
-  //   y: number,
-  //   board: number[][],
-  //   bombMap: number[][],
-  // ): number[][] => {
-  //   //新しいboard
-  //   let newBoard = board.concat();
-  //   //cellが開いていないことを判定
-  //   if (newBoard[y][x] === -1) {
-  //     //指定した座標にbombがあるか判定
-  //     if (bombMap[y][x] === 1) {
-  //       newBoard[y][x] === 11;
-  //       return newBoard;
-  //       //x,yにbombがないとき
-  //     } else {
-  //       //周りにbombがないとき
-  //       if (checkBombAround(x, y) <= 0) {
-  //         newBoard[y][x] = checkBombAround(x, y);
-  //         directions.forEach((direction) => {
-  //           if (
-  //             -1 < x + direction[0] &&
-  //             x + direction[0] < board[0].length &&
-  //             -1 < y + direction[1] &&
-  //             y + direction[1] < board.length &&
-  //             board[y + direction[1]][x + direction[0]] === -1
-  //           ) {
-  //             newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
-  //               x + direction[0],
-  //               y + direction[1],
-  //             );
-  //             //再帰
-  //             newBoard = makeCellMap(x + direction[0], y + direction[1], newBoard, bombMap);
-  //           }
-  //         });
-  //       } else {
-  //         newBoard[y][x] = checkBombAround(x, y);
-  //       }
-  //     }
-  //   }
-  //   return newBoard;
-  // };
-
-  // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board ^bombMap ^directions)
-  // const cellOpen = (x: number, y: number, bombMap: number[][]): number[][] => {
-  //   const newBoard = board.concat();
-  //   //cellが開いていないことを判定
-  //   if (newBoard[y][x] === -1) {
-  //     //指定した座標にbombがあるか判定
-  //     if (bombMap[y][x] === 1) {
-  //       newBoard[y][x] === 11;
-  //     } else {
-  //       if (checkBombAround(x, y) <= 0) {
-  //         newBoard[y][x] = 0;
-  //       } else {
-  //         newBoard[y][x] = checkBombAround(x, y);
-  //       }
-  //     }
-  //     setBoard(newBoard);
-  //   }
-  //   //再帰
-  //   directions.forEach((direction) => {
-  //     if (
-  //       -1 < x + direction[0] &&
-  //       x + direction[0] < board[0].length &&
-  //       -1 < y + direction[1] &&
-  //       y + direction[1] < board.length &&
-  //       board[y + direction[1]][x + direction[0]] === -1 &&
-  //       canRelease(x + direction[0], y + direction[1])
-  //     ) {
-  //       cellOpen(x + direction[0], y + direction[1], bombMap);
-  //     }
-  //   });
-  // };
-
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
     const newBoard = board.concat();
     console.log('<-- now in cellOpen() -->');

@@ -19,7 +19,6 @@
   border-left: 0.48vh solid #737373;
 }
 
-/* background: url('../assets/images/icons.png') no-repeat; */
 .board {
   display: grid;
   grid-template-columns: repeat(9, 8vh);
