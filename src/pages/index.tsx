@@ -287,7 +287,9 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <div className={styles.outer}>
-        <div className={styles.info} />
+        <div className={styles.info}>
+          <div className={styles.faceButton} />
+        </div>
         <div className={styles.board}>
           {board.map((row, y) =>
             row.map(

@@ -70,6 +70,9 @@
 }
 
 .info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 16vh;
   margin-bottom: 1.5vh;
   background-color: #adadad;
@@ -77,4 +80,11 @@
   border-right: 0.72vh solid #e5e5e5;
   border-bottom: 0.72vh solid #e5e5e5;
   border-left: 0.72vh solid #737373;
+}
+
+.faceButton {
+  object-fit: cover;
+  width: 10vh;
+  height: 10vh;
+  background-image: url('../assets/images/face_unpressed.svg');
 }
