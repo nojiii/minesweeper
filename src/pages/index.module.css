@@ -83,8 +83,13 @@
 }
 
 .faceButton {
-  object-fit: cover;
   width: 10vh;
   height: 10vh;
   background-image: url('../assets/images/face_unpressed.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.faceButton:active {
+  background-image: url('../assets/images/face_pressed.svg');
 }
