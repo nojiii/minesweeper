@@ -134,8 +134,10 @@ const Home = () => {
     return newBombMap;
   };
 
-  //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y ^bombMap ^directions)
-  const checkBombAround = (x: number, y: number): number => {
+  //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y bombMap ^directions)
+  const checkBombAround = (x: number, y: number, bombMap: number[][]): number => {
+    console.log('<-- now in checkBombAround() -->');
+    console.log('checkBombAround() recieved bombMap:', bombMap);
     let count = 0;
     directions.forEach((direction) => {
       if (
@@ -148,6 +150,7 @@ const Home = () => {
         count++;
       }
     });
+    console.log('<-- end of checkBombAround() -->');
     return count;
   };
 
@@ -253,12 +256,18 @@ const Home = () => {
   //   });
   // };
 
-  const cellOpen = (x: number, y: number) => {
+  const cellOpen = (x: number, y: number, bombMap: number[][]) => {
     const newBoard = board.concat();
-    if (bombMap[y][x] !== 1) {
-      newBoard[y][x] = checkBombAround(x, y);
+    console.log('<-- now in cellOpen() -->');
+    console.log('cellOpen() recieve x:', x, 'y:', y);
+    console.log('cellOpen() recieve bombmap:', bombMap);
+    if (bombMap[y][x] === 1) {
+      newBoard[y][x] = 11;
+    } else {
+      newBoard[y][x] = checkBombAround(x, y, bombMap);
     }
     setBoard(newBoard);
+    console.log('<-- end of cellOpen() -->');
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -270,19 +279,17 @@ const Home = () => {
       newBombMap = createBombMap(x, y);
       setBombMap(newBombMap);
       setGameState(1);
-      // //cellを開く
-      // cellOpen(x, y, newBombMap);
-    } else {
-      // //cellを開く
-      // cellOpen(x, y, bombMap);
-    }
 
-    //cellを開く
-    cellOpen(x, y);
+      //cellを開く
+      cellOpen(x, y, newBombMap);
+    } else {
+      //cellを開く
+      cellOpen(x, y, bombMap);
+    }
 
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);
-    console.log('クリックした座標の周りのボムの数', checkBombAround(x, y));
+    console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
   };
   return (
     <div className={styles.container}>
@@ -321,7 +328,7 @@ const Home = () => {
                     <div
                       className={styles.spCell}
                       style={{
-                        backgroundPosition: `${(board[y][x] - 1) * -8}vh 0px`,
+                        backgroundPosition: `${(board[y][x] - 1) * -7.53}vh 0px`,
                       }}
                       key={`${x}-${y}`}
                       onClick={() => clickHandler(x, y)}
