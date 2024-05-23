@@ -54,7 +54,7 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ]);
-  //ゲーム状況 0=未開始 1=進行中 2=クリア (予定)
+  //ゲーム状況 0=未開始 1=進行中 2=終了 (予定)
   const [gameState, setGameState] = useState(0);
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
@@ -127,26 +127,6 @@ const Home = () => {
     return count;
   };
 
-  //x,y座標を受け取りその座標の周り3~8マスが爆弾でない、そのマスに爆弾がないならtrue,そうでないならfalseを返す関数
-  const canRelease = (x: number, y: number, bombMap: number[][]): boolean => {
-    if (bombMap[y][x] === 1) {
-      return false;
-    } else {
-      directions.forEach((direction) => {
-        if (
-          -1 < x + direction[0] &&
-          x + direction[0] < bombMap[0].length &&
-          -1 < y + direction[1] &&
-          y + direction[1] < bombMap.length &&
-          bombMap[y + direction[1]][x + direction[0]] === 1
-        ) {
-          return false;
-        }
-      });
-      return true;
-    }
-  };
-
   // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board bombMap ^directions)
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
     const newBoard = board.concat();
@@ -186,6 +166,22 @@ const Home = () => {
     console.log('<-- end of cellOpen() -->');
   };
 
+  const gameReset = () => {
+    const newBoard = [
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    ];
+    setBoard(newBoard);
+    setGameState(0);
+  };
+
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
     console.log('クリックした座標', x, y);
@@ -214,7 +210,7 @@ const Home = () => {
           <div className={styles.display}>
             <div className={styles.bombDisplay} />
           </div>
-          <div className={styles.faceButton} />
+          <div className={styles.faceButton} onClick={() => gameReset()} />
           <div className={styles.display}>
             <div className={styles.timeDisplay} />
           </div>
