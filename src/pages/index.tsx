@@ -109,8 +109,9 @@ const Home = () => {
 
   //x,y座標を受け取りその座標の周り3~8マスの爆弾の数を返す関数(x, y bombMap ^directions)
   const checkBombAround = (x: number, y: number, bombMap: number[][]): number => {
-    console.log('<-- now in checkBombAround() -->');
-    console.log('checkBombAround() recieved bombMap:', bombMap);
+    if (bombMap[y][x] === 1) {
+      return 11;
+    }
     let count = 0;
     directions.forEach((direction) => {
       if (
@@ -123,12 +124,11 @@ const Home = () => {
         count++;
       }
     });
-    console.log('<-- end of checkBombAround() -->');
     return count;
   };
 
   //x,y座標を受け取りその座標の周り3~8マスが爆弾でない、そのマスに爆弾がないならtrue,そうでないならfalseを返す関数
-  const canRelease = (x: number, y: number): boolean => {
+  const canRelease = (x: number, y: number, bombMap: number[][]): boolean => {
     if (bombMap[y][x] === 1) {
       return false;
     } else {
@@ -156,7 +156,25 @@ const Home = () => {
     if (bombMap[y][x] === 1) {
       newBoard[y][x] = 11;
     } else {
-      newBoard[y][x] = checkBombAround(x, y, bombMap);
+      if (checkBombAround(x, y, bombMap) <= 0 && newBoard[y][x] === -1) {
+        newBoard[y][x] = checkBombAround(x, y, bombMap);
+        directions.forEach((direction) => {
+          if (
+            -1 < x + direction[0] &&
+            x + direction[0] < bombMap[0].length &&
+            -1 < y + direction[1] &&
+            y + direction[1] < bombMap.length
+          ) {
+            newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
+              x + direction[0],
+              y + direction[1],
+              bombMap,
+            );
+          }
+        });
+      } else {
+        newBoard[y][x] = checkBombAround(x, y, bombMap);
+      }
     }
     setBoard(newBoard);
     console.log('<-- end of cellOpen() -->');
