@@ -153,25 +153,31 @@ const Home = () => {
     console.log('<-- now in cellOpen() -->');
     console.log('cellOpen() recieve x:', x, 'y:', y);
     console.log('cellOpen() recieve bombmap:', bombMap);
+    //x,yがボムだった時
+
     if (bombMap[y][x] === 1) {
       newBoard[y][x] = 11;
     } else {
-      if (checkBombAround(x, y, bombMap) <= 0 && newBoard[y][x] === -1) {
+      //x,yの周りにボムが一つもなかった時
+      if (checkBombAround(x, y, bombMap) <= 0) {
         newBoard[y][x] = checkBombAround(x, y, bombMap);
         directions.forEach((direction) => {
           if (
             -1 < x + direction[0] &&
             x + direction[0] < bombMap[0].length &&
             -1 < y + direction[1] &&
-            y + direction[1] < bombMap.length
+            y + direction[1] < bombMap.length &&
+            newBoard[y + direction[1]][x + direction[0]] === -1
           ) {
             newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
               x + direction[0],
               y + direction[1],
               bombMap,
             );
+            cellOpen(x + direction[0], y + direction[1], bombMap);
           }
         });
+        //x,yの周りにボムがあったとき
       } else {
         newBoard[y][x] = checkBombAround(x, y, bombMap);
       }
