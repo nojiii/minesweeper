@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './index.module.css';
+import { v4 as uuidv4 } from 'uuid';
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
 //初級～上級
@@ -41,6 +42,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  //ユーザーの入力を保存する配列
   const [userInputs, setUserInputs] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -51,7 +53,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]); //0~3 クリック 右クリック
+  ]); //0=>何もないcell クリック=>1(変更不能) 右クリック=>2,3(旗、？)
   //合成
   const [board, setBoard] = useState([
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -66,6 +68,33 @@ const Home = () => {
   ]);
   //ゲーム状況 0=未開始 1=進行中 2=終了 (予定)
   const [gameState, setGameState] = useState(0);
+
+  //bombの個数を受け取りdisplayにreturnする
+  const bombCounter = () => {
+    let bombCount = bombQuantity;
+    for (let i = 0; i < userInputs.length; i++) {
+      for (let j = 0; j < userInputs[0].length; j++) {
+        if (userInputs[i][j] === 2) {
+          bombCount -= 1;
+        }
+      }
+    }
+    const result: React.JSX.Element[] = [
+      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+    ];
+    const nums: string[] = String(bombCount).split('');
+    nums.forEach((num) => {
+      result.push(<img src={`/images/d${num}.svg`} style={{ height: '100%' }} key={uuidv4()} />);
+      result.shift();
+    });
+    return result;
+  };
+
+  //displayに表示されるボムの個数
+  const [bombCount, setbombCount] = useState(bombCounter());
+
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
   //     board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
@@ -218,7 +247,7 @@ const Home = () => {
       <div className={styles.outer}>
         <div className={styles.info}>
           <div className={styles.display}>
-            <div className={styles.bombDisplay} />
+            <div className={styles.bombDisplay}>{bombCount}</div>
           </div>
           <div className={styles.faceButton} onClick={() => gameReset()} />
           <div className={styles.display}>
@@ -227,47 +256,38 @@ const Home = () => {
         </div>
         <div className={styles.board}>
           {board.map((row, y) =>
-            row.map(
-              (cellType, x) => {
-                if (cellType === -1) {
-                  return (
-                    <div
-                      className={styles.cell}
-                      key={`${x}-${y}`}
-                      onClick={() => clickHandler(x, y)}
-                    />
-                  );
-                } else if (cellType === 0) {
-                  return (
-                    <div
-                      className={styles.open}
-                      key={`${x}-${y}`}
-                      onClick={() => clickHandler(x, y)}
-                    />
-                  );
-                } else {
-                  return (
-                    <div
-                      className={styles.spCell}
-                      style={{
-                        backgroundPosition: `${(board[y][x] - 1) * -7.53}vh 0px`,
-                      }}
-                      key={`${x}-${y}`}
-                      onClick={() => clickHandler(x, y)}
-                    />
-                  );
-                }
-              },
-
-              // <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
-            ),
+            row.map((cellType, x) => {
+              if (cellType === -1) {
+                return (
+                  <div
+                    className={styles.cell}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              } else if (cellType === 0) {
+                return (
+                  <div
+                    className={styles.open}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              } else {
+                return (
+                  <div
+                    className={styles.spCell}
+                    style={{
+                      backgroundPosition: `${(board[y][x] - 1) * -7.53}vh 0px`,
+                    }}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                  />
+                );
+              }
+            }),
           )}
         </div>
-        {/* <div
-        className={styles.sampleStyle}
-        style={{ backgroundPosition: `${samplePos * -30}px 0px` }} //cssスプライト
-      />
-      <button onClick={() => setSamplePos((p) => (p + 1) % 14)}>sample</button> */}
       </div>
     </div>
   );

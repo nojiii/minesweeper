@@ -95,11 +95,21 @@
 }
 
 .display {
-  width: 21vh;
+  width: 19.5vh;
   height: 12vh;
+  padding: 0.54vh;
   background-color: black;
   border-top: 0.54vh solid #737373;
   border-right: 0.54vh solid #e5e5e5;
   border-bottom: 0.54vh solid #e5e5e5;
   border-left: 0.54vh solid #737373;
+}
+
+.bombDisplay {
+  display: flex;
+  column-gap: 0.9vh;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
