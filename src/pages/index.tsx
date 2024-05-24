@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
+
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
 //初級～上級
@@ -70,7 +71,7 @@ const Home = () => {
   const [gameState, setGameState] = useState(0);
 
   //bombの個数を受け取りdisplayにreturnする
-  const bombCounter = () => {
+  const bombCounter = (userInputs: number[][]) => {
     let bombCount = bombQuantity;
     for (let i = 0; i < userInputs.length; i++) {
       for (let j = 0; j < userInputs[0].length; j++) {
@@ -93,7 +94,7 @@ const Home = () => {
   };
 
   //displayに表示されるボムの個数
-  const [bombCount, setbombCount] = useState(bombCounter());
+  const [bombCount, setbombCount] = useState(bombCounter(userInputs));
 
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
@@ -206,6 +207,7 @@ const Home = () => {
   };
 
   const gameReset = () => {
+    //boardの初期化
     const newBoard = [
       [-1, -1, -1, -1, -1, -1, -1, -1, -1],
       [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -219,7 +221,26 @@ const Home = () => {
     ];
     setBoard(newBoard);
     setGameState(0);
+
+    //userInputsの初期化
+    const newUserInputs = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    setbombCount(bombCounter(newUserInputs));
   };
+
+  //右クリックのメニューを消す
+  function handleContextMenu(evt: React.MouseEvent<HTMLDivElement>) {
+    evt.preventDefault();
+  }
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
@@ -244,7 +265,7 @@ const Home = () => {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.outer}>
+      <div className={styles.outer} onContextMenu={handleContextMenu}>
         <div className={styles.info}>
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
