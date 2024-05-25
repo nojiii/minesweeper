@@ -32,41 +32,20 @@ const Home = () => {
   ];
   // const [samplePos, setSamplePos] = useState(0);
 
-  const [bombMap, setBombMap] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-  //ユーザーの入力を保存する配列
-  const [userInputs, setUserInputs] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]); //0=>何もないcell クリック=>1(変更不能) 右クリック=>2,3(旗、？)
+  //bombMap ボムの位置を保存する配列
+  const initialBombMap = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  const [bombMap, setBombMap] = useState<number[][]>(initialBombMap);
+
+  //userInputs ユーザーの入力を保存する配列
+  const initialUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  const [userInputs, setUserInputs] = useState<number[][]>(initialUserInputs);
+  //0=>何もないcell クリック=>1(変更不能) 右クリック=>2,3(旗、？)
   //合成
-  const [board, setBoard] = useState([
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ]);
+
+  //board cellの状態を保存する配列
+  const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
+  const [board, setBoard] = useState<number[][]>(initialBoard);
+
   //ゲーム状況 0=未開始 1=進行中 2=終了 (予定)
   const [gameState, setGameState] = useState(0);
 
@@ -122,17 +101,9 @@ const Home = () => {
 
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   const createBombMap = (x: number, y: number): number[][] => {
-    const newBombMap: number[][] = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
+    const newBombMap: number[][] = Array.from({ length: boardWidth }, () =>
+      Array(boardHeight).fill(0),
+    );
     for (let i = 0; i < bombQuantity; i++) {
       let putBomb: boolean = false;
       while (!putBomb) {
@@ -167,20 +138,24 @@ const Home = () => {
     return count;
   };
 
-  // //x,y座標を受け取りその座標のboardの状態を変える(x, y, ^board bombMap ^directions)
+  // //x,y座標を受け取りその座標のboard,userInputsの状態を変える(x, y, ^board bombMap ^directions ^userInputs)
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
+    //新しいboardとuserInputsを作成
     const newBoard = board.concat();
-    console.log('<-- now in cellOpen() -->');
-    console.log('cellOpen() recieve x:', x, 'y:', y);
-    console.log('cellOpen() recieve bombmap:', bombMap);
-    //x,yがボムだった時
+    const newUserInputs = userInputs.concat();
 
+    //x,yがボムだった時
     if (bombMap[y][x] === 1) {
       newBoard[y][x] = 11;
+      newUserInputs[y][x] = 1;
+      //x, yに旗、？がある時
+    } else if (userInputs[y][x] >= 2) {
+      return;
     } else {
       //x,yの周りにボムが一つもなかった時
       if (checkBombAround(x, y, bombMap) <= 0) {
         newBoard[y][x] = checkBombAround(x, y, bombMap);
+        newUserInputs[y][x] = 1;
         directions.forEach((direction) => {
           if (
             -1 < x + direction[0] &&
@@ -189,58 +164,57 @@ const Home = () => {
             y + direction[1] < bombMap.length &&
             newBoard[y + direction[1]][x + direction[0]] === -1
           ) {
-            newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
-              x + direction[0],
-              y + direction[1],
-              bombMap,
-            );
+            if (userInputs[y + direction[1]][x + direction[0]] === 0) {
+              newBoard[y + direction[1]][x + direction[0]] = checkBombAround(
+                x + direction[0],
+                y + direction[1],
+                bombMap,
+              );
+              newUserInputs[y + direction[1]][x + direction[0]] = 1;
+            }
             cellOpen(x + direction[0], y + direction[1], bombMap);
           }
         });
         //x,yの周りにボムがあったとき
       } else {
-        newBoard[y][x] = checkBombAround(x, y, bombMap);
+        if (userInputs[y][x] === 0) {
+          newBoard[y][x] = checkBombAround(x, y, bombMap);
+          newUserInputs[y][x] = 1;
+        }
       }
     }
     setBoard(newBoard);
-    console.log('<-- end of cellOpen() -->');
+    setUserInputs(newUserInputs);
   };
 
   const gameReset = () => {
     //boardの初期化
-    const newBoard = [
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    ];
-    setBoard(newBoard);
+    const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
+    setBoard(initialBoard);
     setGameState(0);
 
     //userInputsの初期化
-    const newUserInputs = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    setbombCount(bombCounter(newUserInputs));
+    const initialInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+    setUserInputs(initialInputs);
+
+    setbombCount(bombCounter(initialInputs));
   };
 
-  //右クリックのメニューを消す
-  function handleContextMenu(evt: React.MouseEvent<HTMLDivElement>) {
-    evt.preventDefault();
-  }
+  //右クリック時
+  const onRightClick = (x: number, y: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    //右クリックのメニューを非表示
+    e.preventDefault();
+    const newUserInputs = userInputs.concat();
+    if (newUserInputs[y][x] === 0) {
+      newUserInputs[y][x] = 2;
+    } else if (newUserInputs[y][x] === 2) {
+      newUserInputs[y][x] = 3;
+    } else {
+      newUserInputs[y][x] = 0;
+    }
+    setUserInputs(newUserInputs);
+    setbombCount(bombCounter(newUserInputs));
+  };
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
@@ -262,10 +236,11 @@ const Home = () => {
     console.log('現在のboard', board);
     console.log('ボムの位置のmap', bombMap);
     console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
+    console.log('UserInputs', userInputs);
   };
   return (
     <div className={styles.container}>
-      <div className={styles.outer} onContextMenu={handleContextMenu}>
+      <div className={styles.outer}>
         <div className={styles.info}>
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
@@ -279,13 +254,35 @@ const Home = () => {
           {board.map((row, y) =>
             row.map((cellType, x) => {
               if (cellType === -1) {
-                return (
-                  <div
-                    className={styles.cell}
-                    key={`${x}-${y}`}
-                    onClick={() => clickHandler(x, y)}
-                  />
-                );
+                //userInputsが旗,?の場合
+                if (userInputs[y][x] >= 2) {
+                  return (
+                    <div
+                      className={styles.cell}
+                      key={`${x}-${y}`}
+                      onClick={() => clickHandler(x, y)}
+                      onContextMenu={(e) => onRightClick(x, y, e)}
+                    >
+                      <div
+                        className={styles.rightClick}
+                        style={{
+                          backgroundPosition: `${(11 - userInputs[y][x]) * -6.15}vh 0px`,
+                          backgroundSize: 'auto 100%',
+                          // backgroundColor: 'red',
+                        }}
+                      />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      className={styles.cell}
+                      key={`${x}-${y}`}
+                      onClick={() => clickHandler(x, y)}
+                      onContextMenu={(e) => onRightClick(x, y, e)}
+                    />
+                  );
+                }
               } else if (cellType === 0) {
                 return (
                   <div
