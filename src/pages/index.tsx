@@ -18,7 +18,7 @@ const Home = () => {
   const boardHeight: number = 9;
   const boardWidth: number = 9;
   //ボムの個数
-  const bombQuantity: number = 10;
+  let bombQuantity: number = 10;
   //方向
   const directions: number[][] = [
     [0, -1],
@@ -58,6 +58,9 @@ const Home = () => {
           bombCount -= 1;
         }
       }
+    }
+    if (bombCount <= -99) {
+      bombCount = -99;
     }
     const result: React.JSX.Element[] = [
       <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
@@ -104,6 +107,11 @@ const Home = () => {
     const newBombMap: number[][] = Array.from({ length: boardWidth }, () =>
       Array(boardHeight).fill(0),
     );
+    //bombの個数が要素数より多いとき
+    if (bombQuantity >= boardWidth * boardHeight) {
+      bombQuantity = boardWidth * boardHeight;
+      return Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+    }
     for (let i = 0; i < bombQuantity; i++) {
       let putBomb: boolean = false;
       while (!putBomb) {
@@ -145,7 +153,7 @@ const Home = () => {
     const newUserInputs = userInputs.concat();
 
     //x,yがボムだった時
-    if (bombMap[y][x] === 1) {
+    if (bombMap[y][x] === 1 && userInputs[y][x] === 0) {
       newBoard[y][x] = 11;
       newUserInputs[y][x] = 1;
       //x, yに旗、？がある時
@@ -240,6 +248,7 @@ const Home = () => {
   };
   return (
     <div className={styles.container}>
+      <div className={styles.settings} />
       <div className={styles.outer}>
         <div className={styles.info}>
           <div className={styles.display}>
@@ -264,11 +273,10 @@ const Home = () => {
                       onContextMenu={(e) => onRightClick(x, y, e)}
                     >
                       <div
-                        className={styles.rightClick}
+                        className={styles.flags}
                         style={{
                           backgroundPosition: `${(11 - userInputs[y][x]) * -6.15}vh 0px`,
                           backgroundSize: 'auto 100%',
-                          // backgroundColor: 'red',
                         }}
                       />
                     </div>
@@ -289,6 +297,7 @@ const Home = () => {
                     className={styles.open}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
+                    onContextMenu={(e) => e.preventDefault()}
                   />
                 );
               } else {
@@ -300,6 +309,7 @@ const Home = () => {
                     }}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
+                    onContextMenu={(e) => e.preventDefault()}
                   />
                 );
               }
