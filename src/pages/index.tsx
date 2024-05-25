@@ -46,7 +46,7 @@ const Home = () => {
   const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
   const [board, setBoard] = useState<number[][]>(initialBoard);
 
-  //ゲーム状況 0=未開始 1=進行中 2=終了 (予定)
+  //ゲーム状況 0=未開始 1=進行中 2=勝利 3=敗北 (予定)
   const [gameState, setGameState] = useState(0);
 
   //bombの個数を受け取りdisplayにreturnする
@@ -156,6 +156,7 @@ const Home = () => {
     if (bombMap[y][x] === 1 && userInputs[y][x] === 0) {
       newBoard[y][x] = 11;
       newUserInputs[y][x] = 1;
+      stepBomb(bombMap);
       //x, yに旗、？がある時
     } else if (userInputs[y][x] >= 2) {
       return;
@@ -193,19 +194,67 @@ const Home = () => {
     }
     setBoard(newBoard);
     setUserInputs(newUserInputs);
+
+    //勝利しているか判定
+    if (bombMap[y][x] !== 1) {
+      checkGameWin(newBoard);
+    }
   };
 
+  //ゲームリセット
   const gameReset = () => {
     //boardの初期化
     const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
     setBoard(initialBoard);
+
+    //gameStateの初期化
     setGameState(0);
 
     //userInputsの初期化
     const initialInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
     setUserInputs(initialInputs);
 
+    //bombCounterの初期化
     setbombCount(bombCounter(initialInputs));
+  };
+
+  //ゲームに勝利しているか判定する関数
+  const checkGameWin = (board: number[][]) => {
+    let count = 0;
+    for (let i = 0; i < boardHeight; i++) {
+      for (let j = 0; j < boardWidth; j++) {
+        if (board[i][j] === -1) {
+          count++;
+        }
+      }
+    }
+    if (count <= bombQuantity && gameState === 1) {
+      const newUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+      for (let i = 0; i < boardHeight; i++) {
+        for (let j = 0; j < boardWidth; j++) {
+          if (board[i][j] === -1) {
+            newUserInputs[i][j] = 2;
+          }
+        }
+      }
+      setUserInputs(newUserInputs);
+      setGameState(2);
+    }
+  };
+
+  //bombを踏んだ時
+  const stepBomb = (bombMap: number[][]) => {
+    const newBoard = board.concat();
+    for (let i = 0; i < boardHeight; i++) {
+      for (let j = 0; j < boardWidth; j++) {
+        if (board[i][j] === -1 && bombMap[i][j] === 1) {
+          newBoard[i][j] = 11;
+        }
+      }
+    }
+    const newUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+    setUserInputs(newUserInputs);
+    setGameState(3);
   };
 
   //右クリック時
@@ -217,11 +266,13 @@ const Home = () => {
       newUserInputs[y][x] = 2;
     } else if (newUserInputs[y][x] === 2) {
       newUserInputs[y][x] = 3;
-    } else {
+    } else if (newUserInputs[y][x] === 3) {
       newUserInputs[y][x] = 0;
     }
-    setUserInputs(newUserInputs);
-    setbombCount(bombCounter(newUserInputs));
+    if (gameState === 1) {
+      setUserInputs(newUserInputs);
+      setbombCount(bombCounter(newUserInputs));
+    }
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -236,7 +287,7 @@ const Home = () => {
 
       //cellを開く
       cellOpen(x, y, newBombMap);
-    } else {
+    } else if (gameState === 1) {
       //cellを開く
       cellOpen(x, y, bombMap);
     }
@@ -248,13 +299,31 @@ const Home = () => {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.settings} />
+      <div className={styles.settings}>
+        <div>縦：</div>
+        <input type="number" step="1" min="1" />
+        <div>横：</div>
+        <input type="number" step="1" min="1" />
+        <div>ボムの個数：</div>
+        <input type="number" step="1" min="1" />
+        <button>更新</button>
+      </div>
       <div className={styles.outer}>
         <div className={styles.info}>
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
           </div>
-          <div className={styles.faceButton} onClick={() => gameReset()} />
+          <div
+            className={styles.faceButton}
+            onClick={() => gameReset()}
+            style={
+              gameState === 2
+                ? { backgroundImage: 'url("/images/face_win.svg")' }
+                : gameState === 3
+                  ? { backgroundImage: 'url("/images/face_lose.svg")' }
+                  : { backgroundImage: 'url("/images/face_unpressed.svg")' }
+            }
+          />
           <div className={styles.display}>
             <div className={styles.timeDisplay} />
           </div>
