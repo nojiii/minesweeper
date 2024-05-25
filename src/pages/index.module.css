@@ -92,7 +92,7 @@
 }
 
 .faceButton:active {
-  background-image: url('../assets/images/face_pressed.svg') !important;
+  background-image: url('/images/face_pressed.svg') !important;
 }
 
 .display {
@@ -128,4 +128,11 @@
   width: 36vh;
   height: 48vh;
   background-color: #bebebe;
+}
+
+.dificulty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }

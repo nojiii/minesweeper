@@ -275,6 +275,27 @@ const Home = () => {
     }
   };
 
+  // //ゲームの初期化
+  // const setGame = (height: number, width: number, bq: number) => {
+  //   boardHeight = height;
+  //   boardWidth = width;
+  //   bombQuantity = bq;
+  //   //bombMap ボムの位置を保存する配列
+  //   const initialBombMap = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  //   setBombMap(initialBombMap);
+
+  //   //userInputs ユーザーの入力を保存する配列
+  //   const initialUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  //   setUserInputs(initialUserInputs);
+
+  //   //board cellの状態を保存する配列
+  //   const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
+  //   setBoard(initialBoard);
+
+  //   bombCounter(userInputs);
+  //   setGameState(0);
+  // };
+
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
     console.log('クリックした座標', x, y);
@@ -300,13 +321,12 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
-        <div>縦：</div>
-        <input type="number" step="1" min="1" />
-        <div>横：</div>
-        <input type="number" step="1" min="1" />
-        <div>ボムの個数：</div>
-        <input type="number" step="1" min="1" />
-        <button>更新</button>
+        <div className={styles.dificulty}>
+          <button onClick={() => setGame(9, 9, 55)}>初級</button>
+          <button>中級</button>
+          <button>上級</button>
+          <button>カスタム</button>
+        </div>
       </div>
       <div className={styles.outer}>
         <div className={styles.info}>
