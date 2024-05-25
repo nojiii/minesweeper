@@ -322,7 +322,7 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.settings}>
         <div className={styles.dificulty}>
-          <button onClick={() => setGame(9, 9, 55)}>初級</button>
+          <button>初級</button>
           <button>中級</button>
           <button>上級</button>
           <button>カスタム</button>
