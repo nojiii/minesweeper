@@ -269,7 +269,7 @@ const Home = () => {
     } else if (newUserInputs[y][x] === 3) {
       newUserInputs[y][x] = 0;
     }
-    if (gameState === 1) {
+    if (gameState === 1 || gameState === 0) {
       setUserInputs(newUserInputs);
       setbombCount(bombCounter(newUserInputs));
     }
