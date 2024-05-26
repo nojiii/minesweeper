@@ -238,6 +238,13 @@ const Home = () => {
       }
       setUserInputs(newUserInputs);
       setGameState(2);
+
+      //bombDisplayの更新
+      setbombCount([
+        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+      ]);
     }
   };
 
@@ -328,7 +335,7 @@ const Home = () => {
         </div>
       </div>
       <div className={styles.outer}>
-        <div className={styles.info}>
+        <div className={styles.info} onContextMenu={(e) => e.preventDefault()}>
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
           </div>

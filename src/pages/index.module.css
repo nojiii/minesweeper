@@ -85,8 +85,6 @@
   width: 12vh;
   height: 12vh;
   margin: 0 8vh;
-
-  /* background-image: url('../assets/images/face_unpressed.svg'); */
   background-repeat: no-repeat;
   background-size: contain;
 }
