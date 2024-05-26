@@ -56,7 +56,7 @@ const Home = () => {
   const [gameState, setGameState] = useState(0);
 
   //bombの個数を受け取りdisplayにreturnする
-  const bombCounter = (userInputs: number[][]) => {
+  const bombCounter = (userInputs: number[][], bombQuantity: number) => {
     let bombCount = bombQuantity;
     for (let i = 0; i < userInputs.length; i++) {
       for (let j = 0; j < userInputs[0].length; j++) {
@@ -82,7 +82,7 @@ const Home = () => {
   };
 
   //displayに表示されるボムの個数
-  const [bombCount, setbombCount] = useState(bombCounter(userInputs));
+  const [bombCount, setbombCount] = useState(bombCounter(userInputs, bombQuantity));
 
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
@@ -227,7 +227,7 @@ const Home = () => {
     setUserInputs(initialInputs);
 
     //bombCounterの初期化
-    setbombCount(bombCounter(initialInputs));
+    setbombCount(bombCounter(initialInputs, bombQuantity));
   };
 
   //ゲームに勝利しているか判定する関数
@@ -295,7 +295,7 @@ const Home = () => {
     }
     if (gameState === 1 || gameState === 0) {
       setUserInputs(newUserInputs);
-      setbombCount(bombCounter(newUserInputs));
+      setbombCount(bombCounter(newUserInputs, bombQuantity));
     }
   };
 
@@ -325,7 +325,7 @@ const Home = () => {
     setBoard(initialBoard);
 
     //bombCounter bombの個数を表示する
-    setbombCount(bombCounter(initialUserInputs));
+    setbombCount(() => bombCounter(initialUserInputs, bq));
 
     //gameState  ゲームの状況を未開始に設定
     setGameState(0);
@@ -357,9 +357,9 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.settings}>
         <div className={styles.dificulty}>
-          <button onClick={() => setGame(4, 3, 2)}>初級</button>
-          <button>中級</button>
-          <button>上級</button>
+          <button onClick={() => setGame(9, 9, 10)}>初級</button>
+          <button onClick={() => setGame(16, 16, 40)}>中級</button>
+          <button onClick={() => setGame(16, 30, 99)}>上級</button>
           <button>カスタム</button>
         </div>
       </div>
