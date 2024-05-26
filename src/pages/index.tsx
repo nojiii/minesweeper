@@ -80,8 +80,7 @@ const Home = () => {
 
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
-  //     board.push(); // 0-8数字 9爆弾 10赤い爆弾 11
-  //   }
+  //     board.push(); // 0-8数字 11爆弾 10赤い爆弾   //   }
   // }
   //tsx board.map
   // console.log(samplePos);
@@ -154,7 +153,7 @@ const Home = () => {
 
     //x,yがボムだった時
     if (bombMap[y][x] === 1 && userInputs[y][x] === 0) {
-      newBoard[y][x] = 11;
+      newBoard[y][x] = 10;
       newUserInputs[y][x] = 1;
       stepBomb(bombMap);
       //x, yに旗、？がある時
@@ -387,6 +386,16 @@ const Home = () => {
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={(e) => e.preventDefault()}
+                  />
+                );
+              } else if (cellType === 10) {
+                return (
+                  <div
+                    className={styles.spCell}
+                    key={`${x}-${y}`}
+                    onClick={() => clickHandler(x, y)}
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{ backgroundPosition: `${10 * -7.53}vh 0px`, backgroundColor: 'red' }}
                   />
                 );
               } else {
