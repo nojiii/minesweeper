@@ -21,7 +21,6 @@
 
 .board {
   display: grid;
-  grid-template-columns: repeat(9, 8vh);
   background-color: #b2b2b2;
   border-top: 0.72vh solid #737373;
   border-right: 0.72vh solid #e5e5e5;
@@ -73,6 +72,7 @@
   align-items: center;
   justify-content: center;
   height: 16vh;
+  padding: 0 1vh;
   margin-bottom: 1.5vh;
   background-color: #adadad;
   border-top: 0.72vh solid #737373;
@@ -123,8 +123,6 @@
   position: absolute;
   top: 3vh;
   left: 3vh;
-  width: 36vh;
-  height: 48vh;
   background-color: #bebebe;
 }
 

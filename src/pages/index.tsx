@@ -15,10 +15,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 const Home = () => {
   //盤面の大きさ
-  const boardHeight: number = 9;
-  const boardWidth: number = 9;
+  const [boardHeight, setBoardHeight] = useState(9);
+  const [boardWidth, setBoardWidth] = useState(9);
   //ボムの個数
-  let bombQuantity: number = 10;
+  const [bombQuantity, setBombQuantity] = useState(10);
   //方向
   const directions: number[][] = [
     [0, -1],
@@ -33,17 +33,23 @@ const Home = () => {
   // const [samplePos, setSamplePos] = useState(0);
 
   //bombMap ボムの位置を保存する配列
-  const initialBombMap = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  const initialBombMap = Array.from({ length: boardHeight }, () =>
+    Array.from({ length: boardWidth }, () => 0),
+  );
   const [bombMap, setBombMap] = useState<number[][]>(initialBombMap);
 
   //userInputs ユーザーの入力を保存する配列
-  const initialUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+  const initialUserInputs = Array.from({ length: boardHeight }, () =>
+    Array.from({ length: boardWidth }, () => 0),
+  );
   const [userInputs, setUserInputs] = useState<number[][]>(initialUserInputs);
   //0=>何もないcell クリック=>1(変更不能) 右クリック=>2,3(旗、？)
   //合成
 
   //board cellの状態を保存する配列
-  const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
+  const initialBoard = Array.from({ length: boardHeight }, () =>
+    Array.from({ length: boardWidth }, () => -1),
+  );
   const [board, setBoard] = useState<number[][]>(initialBoard);
 
   //ゲーム状況 0=未開始 1=進行中 2=勝利 3=敗北 (予定)
@@ -103,15 +109,18 @@ const Home = () => {
 
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   const createBombMap = (x: number, y: number): number[][] => {
-    const newBombMap: number[][] = Array.from({ length: boardWidth }, () =>
-      Array(boardHeight).fill(0),
+    const newBombMap: number[][] = Array.from({ length: boardHeight }, () =>
+      Array.from({ length: boardWidth }, () => 0),
     );
+
     //bombの個数が要素数より多いとき
+    let newBombQuantity = bombQuantity;
     if (bombQuantity >= boardWidth * boardHeight) {
-      bombQuantity = boardWidth * boardHeight;
-      return Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+      newBombQuantity = boardWidth * boardHeight;
+      setBombQuantity(newBombQuantity);
+      return Array.from({ length: boardHeight }, () => Array.from({ length: boardWidth }, () => 1));
     }
-    for (let i = 0; i < bombQuantity; i++) {
+    for (let i = 0; i < newBombQuantity; i++) {
       let putBomb: boolean = false;
       while (!putBomb) {
         const randY: number = Math.floor(Math.random() * boardHeight);
@@ -203,14 +212,18 @@ const Home = () => {
   //ゲームリセット
   const gameReset = () => {
     //boardの初期化
-    const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
+    const initialBoard = Array.from({ length: boardHeight }, () =>
+      Array.from({ length: boardWidth }, () => -1),
+    );
     setBoard(initialBoard);
 
     //gameStateの初期化
     setGameState(0);
 
     //userInputsの初期化
-    const initialInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
+    const initialInputs = Array.from({ length: boardHeight }, () =>
+      Array.from({ length: boardWidth }, () => 0),
+    );
     setUserInputs(initialInputs);
 
     //bombCounterの初期化
@@ -227,8 +240,11 @@ const Home = () => {
         }
       }
     }
-    if (count <= bombQuantity && gameState === 1) {
-      const newUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+    if (count <= bombQuantity) {
+      // && gameState === 1
+      const newUserInputs = Array.from({ length: boardHeight }, () =>
+        Array.from({ length: boardWidth }, () => 1),
+      );
       for (let i = 0; i < boardHeight; i++) {
         for (let j = 0; j < boardWidth; j++) {
           if (board[i][j] === -1) {
@@ -258,7 +274,9 @@ const Home = () => {
         }
       }
     }
-    const newUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(1));
+    const newUserInputs = Array.from({ length: boardHeight }, () =>
+      Array.from({ length: boardWidth }, () => 1),
+    );
     setUserInputs(newUserInputs);
     setGameState(3);
   };
@@ -281,26 +299,37 @@ const Home = () => {
     }
   };
 
-  // //ゲームの初期化
-  // const setGame = (height: number, width: number, bq: number) => {
-  //   boardHeight = height;
-  //   boardWidth = width;
-  //   bombQuantity = bq;
-  //   //bombMap ボムの位置を保存する配列
-  //   const initialBombMap = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
-  //   setBombMap(initialBombMap);
+  //ゲームの初期化
+  const setGame = (height: number, width: number, bq: number) => {
+    //boardの大きさの変更
+    setBoardHeight(height);
+    setBoardWidth(width);
+    setBombQuantity(bq);
 
-  //   //userInputs ユーザーの入力を保存する配列
-  //   const initialUserInputs = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(0));
-  //   setUserInputs(initialUserInputs);
+    //bombMap ボムの位置を保存する配列
+    const initialBombMap = Array.from({ length: height }, () =>
+      Array.from({ length: width }, () => 0),
+    );
+    setBombMap(initialBombMap);
 
-  //   //board cellの状態を保存する配列
-  //   const initialBoard = Array.from({ length: boardWidth }, () => Array(boardHeight).fill(-1));
-  //   setBoard(initialBoard);
+    //userInputs ユーザーの入力を保存する配列
+    const initialUserInputs = Array.from({ length: height }, () =>
+      Array.from({ length: width }, () => 0),
+    );
+    setUserInputs(initialUserInputs);
 
-  //   bombCounter(userInputs);
-  //   setGameState(0);
-  // };
+    //board cellの状態を保存する配列
+    const initialBoard = Array.from({ length: height }, () =>
+      Array.from({ length: width }, () => -1),
+    );
+    setBoard(initialBoard);
+
+    //bombCounter bombの個数を表示する
+    setbombCount(bombCounter(initialUserInputs));
+
+    //gameState  ゲームの状況を未開始に設定
+    setGameState(0);
+  };
 
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
@@ -319,16 +348,16 @@ const Home = () => {
       cellOpen(x, y, bombMap);
     }
 
-    console.log('現在のboard', board);
-    console.log('ボムの位置のmap', bombMap);
-    console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
-    console.log('UserInputs', userInputs);
+    // console.log('現在のboard', board);
+    // console.log('ボムの位置のmap', bombMap);
+    // console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
+    // console.log('UserInputs', userInputs);
   };
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
         <div className={styles.dificulty}>
-          <button>初級</button>
+          <button onClick={() => setGame(4, 3, 2)}>初級</button>
           <button>中級</button>
           <button>上級</button>
           <button>カスタム</button>
@@ -354,7 +383,12 @@ const Home = () => {
             <div className={styles.timeDisplay} />
           </div>
         </div>
-        <div className={styles.board}>
+        <div
+          className={styles.board}
+          style={{
+            gridTemplateColumns: `repeat(${boardWidth}, 8vh)`,
+          }}
+        >
           {board.map((row, y) =>
             row.map((cellType, x) => {
               if (cellType === -1) {
