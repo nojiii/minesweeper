@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
+import { NormalizedRouteManifest } from 'next/dist/server/base-server';
 
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
@@ -54,6 +55,9 @@ const Home = () => {
 
   //ゲーム状況 0=未開始 1=進行中 2=勝利 3=敗北 (予定)
   const [gameState, setGameState] = useState(0);
+
+  //カスタムゲームの設定画面の表示
+  const [customGameState, setCustomGameState] = useState<JSX.Element>();
 
   //bombの個数を受け取りdisplayにreturnする
   const bombCounter = (userInputs: number[][], bombQuantity: number) => {
@@ -301,6 +305,11 @@ const Home = () => {
 
   //ゲームの初期化
   const setGame = (height: number, width: number, bq: number) => {
+    //customGameの設定の非表示
+    setCustomGameState(() => {
+      return <div />;
+    });
+
     //boardの大きさの変更
     setBoardHeight(height);
     setBoardWidth(width);
@@ -353,6 +362,13 @@ const Home = () => {
     // console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
     // console.log('UserInputs', userInputs);
   };
+
+  const [initialHeight, setInitialHeight] = useState<number>(5);
+  const [initialWidth, setInitialWidth] = useState<number>(5);
+  const [initialBombQuantity, setInitialBombQuantity] = useState<number>(5);
+  const customSizeGameRefresh = () => {
+    setGame(initialHeight, initialWidth, initialBombQuantity);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
@@ -360,8 +376,58 @@ const Home = () => {
           <button onClick={() => setGame(9, 9, 10)}>初級</button>
           <button onClick={() => setGame(16, 16, 40)}>中級</button>
           <button onClick={() => setGame(16, 30, 99)}>上級</button>
-          <button>カスタム</button>
+          <button
+            onClick={() =>
+              setCustomGameState(() => {
+                return (
+                  <div style={{ display: 'flex', flexFlow: 'column' }}>
+                    <div>
+                      <label>
+                        縦：
+                        <input
+                          type="number"
+                          step="1"
+                          min="1"
+                          value={initialHeight}
+                          onChange={(event) => setInitialHeight(Number(event.target.value))}
+                          style={{ width: '3em' }}
+                        />
+                      </label>
+                      <label style={{ margin: '0 2em' }}>
+                        横：
+                        <input
+                          type="number"
+                          step="1"
+                          min="1"
+                          value={initialWidth}
+                          onChange={(event) => setInitialWidth(Number(event.target.value))}
+                          style={{ width: '3em' }}
+                        />
+                      </label>
+                      <label>
+                        ボムの個数：
+                        <input
+                          type="number"
+                          step="1"
+                          min="1"
+                          value={initialBombQuantity}
+                          onChange={(event) => setInitialBombQuantity(Number(event.target.value))}
+                          style={{ width: '3em' }}
+                        />
+                      </label>
+                    </div>
+                    <button onClick={() => customSizeGameRefresh()} style={{ margin: '0.5em' }}>
+                      更新
+                    </button>
+                  </div>
+                );
+              })
+            }
+          >
+            カスタム
+          </button>
         </div>
+        <div>{customGameState}</div>
       </div>
       <div className={styles.outer}>
         <div className={styles.info} onContextMenu={(e) => e.preventDefault()}>
@@ -386,7 +452,7 @@ const Home = () => {
         <div
           className={styles.board}
           style={{
-            gridTemplateColumns: `repeat(${boardWidth}, 8vh)`,
+            gridTemplateColumns: `repeat(${boardWidth}, 8rem)`,
           }}
         >
           {board.map((row, y) =>
@@ -404,7 +470,7 @@ const Home = () => {
                       <div
                         className={styles.flags}
                         style={{
-                          backgroundPosition: `${(11 - userInputs[y][x]) * -6.15}vh 0px`,
+                          backgroundPosition: `${(11 - userInputs[y][x]) * -6.15}rem 0px`,
                           backgroundSize: 'auto 100%',
                         }}
                       />
@@ -436,7 +502,7 @@ const Home = () => {
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={(e) => e.preventDefault()}
-                    style={{ backgroundPosition: `${10 * -7.53}vh 0px`, backgroundColor: 'red' }}
+                    style={{ backgroundPosition: `${10 * -7.53}rem 0px`, backgroundColor: 'red' }}
                   />
                 );
               } else {
@@ -444,7 +510,7 @@ const Home = () => {
                   <div
                     className={styles.spCell}
                     style={{
-                      backgroundPosition: `${(board[y][x] - 1) * -7.53}vh 0px`,
+                      backgroundPosition: `${(board[y][x] - 1) * -7.53}rem 0px`,
                     }}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
