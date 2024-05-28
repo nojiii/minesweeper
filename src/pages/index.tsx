@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
-import { NormalizedRouteManifest } from 'next/dist/server/base-server';
 
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
@@ -57,7 +56,7 @@ const Home = () => {
   const [gameState, setGameState] = useState(0);
 
   //カスタムゲームの設定画面の表示
-  const [customGameState, setCustomGameState] = useState<JSX.Element>();
+  const [customGameState, setCustomGameState] = useState(false);
 
   //bombの個数を受け取りdisplayにreturnする
   const bombCounter = (userInputs: number[][], bombQuantity: number) => {
@@ -113,28 +112,42 @@ const Home = () => {
 
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   const createBombMap = (x: number, y: number): number[][] => {
+    console.log('now in createBombMap()');
+    console.log('x-y:', x, '-', y);
+    console.log('bombQuantity:', bombQuantity);
+    console.log('boardHeight:', boardHeight);
+    console.log('boardWidth', boardWidth);
     const newBombMap: number[][] = Array.from({ length: boardHeight }, () =>
       Array.from({ length: boardWidth }, () => 0),
     );
 
+    console.log('newBombMap:', { ...newBombMap });
+
     //bombの個数が要素数より多いとき
     let newBombQuantity = bombQuantity;
     if (bombQuantity >= boardWidth * boardHeight) {
+      console.log('bombQuantity >= boardWidth * boardHeight');
       newBombQuantity = boardWidth * boardHeight;
       setBombQuantity(newBombQuantity);
       return Array.from({ length: boardHeight }, () => Array.from({ length: boardWidth }, () => 1));
     }
+    console.log('before for()');
     for (let i = 0; i < newBombQuantity; i++) {
+      console.log('i:', i);
+      console.log('newBombQuantity:', newBombQuantity);
       let putBomb: boolean = false;
       while (!putBomb) {
         const randY: number = Math.floor(Math.random() * boardHeight);
         const randX: number = Math.floor(Math.random() * boardWidth);
-        if (randX !== x && randY !== y && newBombMap[randY][randX] !== 1) {
+        console.log('randX-randY', randX, '-', randY);
+        if (!(randX === x && randY === y) && newBombMap[randY][randX] !== 1) {
           newBombMap[randY][randX] = 1;
+          console.log('putBomb = true');
           putBomb = true;
         }
       }
     }
+    console.log('return newBombMap:', newBombMap);
     return newBombMap;
   };
 
@@ -160,6 +173,11 @@ const Home = () => {
 
   // //x,y座標を受け取りその座標のboard,userInputsの状態を変える(x, y, ^board bombMap ^directions ^userInputs)
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
+    console.log('now in CellOpen()');
+    console.log('x-y:', x, '-', y);
+    console.log('bombMap:', bombMap);
+    console.log('board', board);
+    console.log('userInputs:', userInputs);
     //新しいboardとuserInputsを作成
     const newBoard = board.concat();
     const newUserInputs = userInputs.concat();
@@ -306,9 +324,7 @@ const Home = () => {
   //ゲームの初期化
   const setGame = (height: number, width: number, bq: number) => {
     //customGameの設定の非表示
-    setCustomGameState(() => {
-      return <div />;
-    });
+    setCustomGameState(false);
 
     //boardの大きさの変更
     setBoardHeight(height);
@@ -343,17 +359,22 @@ const Home = () => {
   const clickHandler = (x: number, y: number) => {
     //クリックした座標をconsoleに表示
     console.log('クリックした座標', x, y);
+    console.log('gameState:', gameState);
     //BombMapの生成&GameStateを進行中に設定
     let newBombMap: number[][] = [];
     if (gameState === 0) {
+      console.log('before createBombMap()');
       newBombMap = createBombMap(x, y);
       setBombMap(newBombMap);
+
+      //GameStateをプレイ中に設定
       setGameState(1);
 
       //cellを開く
       cellOpen(x, y, newBombMap);
     } else if (gameState === 1) {
       //cellを開く
+      console.log('before cellOpen()');
       cellOpen(x, y, bombMap);
     }
 
@@ -363,69 +384,136 @@ const Home = () => {
     // console.log('UserInputs', userInputs);
   };
 
-  const [initialHeight, setInitialHeight] = useState<number>(5);
-  const [initialWidth, setInitialWidth] = useState<number>(5);
-  const [initialBombQuantity, setInitialBombQuantity] = useState<number>(5);
+  //カスタムゲーム設定用のState
+  const [initialHeight, setInitialHeight] = useState(5);
+  const [initialWidth, setInitialWidth] = useState(5);
+  const [initialBombQuantity, setInitialBombQuantity] = useState(5);
   const customSizeGameRefresh = () => {
-    setGame(initialHeight, initialWidth, initialBombQuantity);
+    console.log('customGameSizeRefresh');
+    let newBombQuantity = initialBombQuantity;
+    if (initialHeight * initialWidth <= initialBombQuantity) {
+      newBombQuantity = initialHeight * initialWidth;
+      setInitialBombQuantity(newBombQuantity);
+    }
+    let newHeight = initialHeight;
+    if (initialHeight > 100) {
+      newHeight = 100;
+      setInitialHeight(newHeight);
+    }
+    let newWidth = initialWidth;
+    if (initialWidth > 100) {
+      newWidth = 100;
+      setInitialWidth(newWidth);
+    }
+    setGame(newHeight, newWidth, newBombQuantity);
   };
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
-        <div className={styles.dificulty}>
-          <button onClick={() => setGame(9, 9, 10)}>初級</button>
-          <button onClick={() => setGame(16, 16, 40)}>中級</button>
-          <button onClick={() => setGame(16, 30, 99)}>上級</button>
-          <button
-            onClick={() =>
-              setCustomGameState(() => {
-                return (
-                  <div style={{ display: 'flex', flexFlow: 'column' }}>
-                    <div>
-                      <label>
-                        縦：
-                        <input
-                          type="number"
-                          step="1"
-                          min="1"
-                          value={initialHeight}
-                          onChange={(event) => setInitialHeight(Number(event.target.value))}
-                          style={{ width: '3em' }}
-                        />
-                      </label>
-                      <label style={{ margin: '0 2em' }}>
-                        横：
-                        <input
-                          type="number"
-                          step="1"
-                          min="1"
-                          value={initialWidth}
-                          onChange={(event) => setInitialWidth(Number(event.target.value))}
-                          style={{ width: '3em' }}
-                        />
-                      </label>
-                      <label>
-                        ボムの個数：
-                        <input
-                          type="number"
-                          step="1"
-                          min="1"
-                          value={initialBombQuantity}
-                          onChange={(event) => setInitialBombQuantity(Number(event.target.value))}
-                          style={{ width: '3em' }}
-                        />
-                      </label>
-                    </div>
-                    <button onClick={() => customSizeGameRefresh()} style={{ margin: '0.5em' }}>
-                      更新
-                    </button>
-                  </div>
-                );
-              })
-            }
+        <div className={styles.dificulty} style={{ display: 'flex', flexFlow: 'column' }}>
+          <div style={{ display: 'flex', gap: '1em', flexWrap: 'wrap' }}>
+            <button
+              style={{
+                backgroundColor: '#2e2e2e',
+                border: '2px solid #737373',
+                color: '#e5e5e5',
+                cursor: 'pointer',
+                padding: '0.5rem',
+              }}
+              onClick={() => setGame(9, 9, 10)}
+            >
+              初級
+            </button>
+            <button
+              style={{
+                backgroundColor: '#2e2e2e',
+                border: '2px solid #737373',
+                color: '#e5e5e5',
+                cursor: 'pointer',
+                padding: '0.5rem',
+              }}
+              onClick={() => setGame(16, 16, 40)}
+            >
+              中級
+            </button>
+            <button
+              style={{
+                backgroundColor: '#2e2e2e',
+                border: '2px solid #737373',
+                color: '#e5e5e5',
+                cursor: 'pointer',
+                padding: '0.5rem',
+              }}
+              onClick={() => setGame(16, 30, 99)}
+            >
+              上級
+            </button>
+            <button
+              style={{
+                backgroundColor: '#2e2e2e',
+                border: '2px solid #737373',
+                color: '#e5e5e5',
+                cursor: 'pointer',
+                padding: '0.5rem',
+              }}
+              onClick={() => setCustomGameState(true)}
+            >
+              カスタム
+            </button>
+          </div>
+          <div
+            className={customGameState ? '' : styles.hidden}
+            style={{ display: 'flex', flexFlow: 'column', marginTop: '1rem' }}
           >
-            カスタム
-          </button>
+            <div>
+              <label>
+                縦：
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={initialHeight}
+                  onChange={(event) => setInitialHeight(parseInt(event.target.value))}
+                  style={{ width: '3em' }}
+                />
+              </label>
+              <label style={{ margin: '0 2em' }}>
+                横：
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={initialWidth}
+                  onChange={(event) => setInitialWidth(parseInt(event.target.value))}
+                  style={{ width: '3em' }}
+                />
+              </label>
+              <label>
+                ボムの個数：
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={initialBombQuantity}
+                  onChange={(event) => setInitialBombQuantity(parseInt(event.target.value))}
+                  style={{ width: '3em' }}
+                />
+              </label>
+            </div>
+            <button
+              style={{
+                backgroundColor: '#2e2e2e',
+                border: '2px solid #737373',
+                color: '#e5e5e5',
+                cursor: 'pointer',
+                padding: '0.5rem',
+                marginTop: '0.5em',
+              }}
+              onClick={() => customSizeGameRefresh()}
+            >
+              更新
+            </button>
+          </div>
         </div>
         <div>{customGameState}</div>
       </div>
@@ -452,7 +540,7 @@ const Home = () => {
         <div
           className={styles.board}
           style={{
-            gridTemplateColumns: `repeat(${boardWidth}, 8rem)`,
+            gridTemplateColumns: `repeat(${boardWidth}, 4rem)`,
           }}
         >
           {board.map((row, y) =>
@@ -470,7 +558,7 @@ const Home = () => {
                       <div
                         className={styles.flags}
                         style={{
-                          backgroundPosition: `${(11 - userInputs[y][x]) * -6.15}rem 0px`,
+                          backgroundPosition: `${((11 - userInputs[y][x]) * -6) / 2}rem 0px`,
                           backgroundSize: 'auto 100%',
                         }}
                       />
@@ -502,7 +590,10 @@ const Home = () => {
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={(e) => e.preventDefault()}
-                    style={{ backgroundPosition: `${10 * -7.53}rem 0px`, backgroundColor: 'red' }}
+                    style={{
+                      backgroundPosition: `${(10 * -7.57) / 2}rem 0px`,
+                      backgroundColor: 'red',
+                    }}
                   />
                 );
               } else {
@@ -510,7 +601,7 @@ const Home = () => {
                   <div
                     className={styles.spCell}
                     style={{
-                      backgroundPosition: `${(board[y][x] - 1) * -7.53}rem 0px`,
+                      backgroundPosition: `${((board[y][x] - 1) * -7.57) / 2}rem 0px`,
                     }}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}

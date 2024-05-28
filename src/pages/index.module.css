@@ -7,83 +7,83 @@
 }
 
 .spCell {
-  width: 8rem;
-  height: 8rem;
+  width: 4rem;
+  height: 4rem;
   background: url('~/src/assets/images/icons.png') no-repeat;
   background-size: auto 100%;
-  border-top: 0.48rem solid #737373;
+  border-top: 0.24rem solid #737373;
   border-right: none;
   border-bottom: none;
-  border-left: 0.48rem solid #737373;
+  border-left: 0.24rem solid #737373;
 }
 
 .board {
   display: grid;
   justify-content: center;
   background-color: #b2b2b2;
-  border-top: 0.72rem solid #737373;
-  border-right: 0.72rem solid #e5e5e5;
-  border-bottom: 0.72rem solid #e5e5e5;
-  border-left: 0.72rem solid #737373;
+  border-top: 0.36rem solid #737373;
+  border-right: 0.36rem solid #e5e5e5;
+  border-bottom: 0.36rem solid #e5e5e5;
+  border-left: 0.36rem solid #737373;
 }
 
 .cell {
-  width: 8rem;
-  height: 8rem;
+  width: 4rem;
+  height: 4rem;
   background-color: #b2b2b2;
-  border-top: 1rem solid #e5e5e5;
-  border-right: 1rem solid #737373;
-  border-bottom: 1rem solid #737373;
-  border-left: 1rem solid #e5e5e5;
+  border-top: 0.5rem solid #e5e5e5;
+  border-right: 0.5rem solid #737373;
+  border-bottom: 0.5rem solid #737373;
+  border-left: 0.5rem solid #e5e5e5;
 }
 
 /* .cell:active {
-  width: 8rem;
-  height: 8rem;
+  width: 4rem;
+  height: 4rem;
   background-color: #b2b2b2;
-  border-top: 0.48rem solid #737373;
+  border-top: 0.24rem solid #737373;
   border-right: none;
   border-bottom: none;
-  border-left: 0.48rem solid #737373;
+  border-left: 0.24rem solid #737373;
 } */
 
 .open {
-  width: 8rem;
-  height: 8rem;
+  width: 4rem;
+  height: 4rem;
   background-color: #b2b2b2;
-  border-top: 0.48rem solid #737373;
+  border-top: 0.24rem solid #737373;
   border-right: none;
   border-bottom: none;
-  border-left: 0.48rem solid #737373;
+  border-left: 0.24rem solid #737373;
 }
 
 .outer {
-  padding: 2rem;
+  padding: 1rem;
   background-color: #b2b2b2;
-  border-top: 0.72rem solid #e5e5e5;
-  border-right: 0.72rem solid #737373;
-  border-bottom: 0.72rem solid #737373;
-  border-left: 0.72rem solid #e5e5e5;
+  border-top: 0.36rem solid #e5e5e5;
+  border-right: 0.36rem solid #737373;
+  border-bottom: 0.36rem solid #737373;
+  border-left: 0.36rem solid #e5e5e5;
 }
 
 .info {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 16rem;
-  padding: 0 1rem;
-  margin-bottom: 1.5rem;
+  height: 8rem;
+  padding: 0 0.5rem;
+  margin-bottom: 0.75rem;
   background-color: #adadad;
-  border-top: 0.72rem solid #737373;
-  border-right: 0.72rem solid #e5e5e5;
-  border-bottom: 0.72rem solid #e5e5e5;
-  border-left: 0.72rem solid #737373;
+  border-top: 0.36rem solid #737373;
+  border-right: 0.36rem solid #e5e5e5;
+  border-bottom: 0.36rem solid #e5e5e5;
+  border-left: 0.36rem solid #737373;
 }
 
 .faceButton {
-  width: 12rem;
-  height: 12rem;
-  margin: 0 8rem;
+  width: 6rem;
+  height: 6rem;
+  margin: 0 4rem;
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -93,19 +93,19 @@
 }
 
 .display {
-  width: 19.5rem;
-  height: 12rem;
-  padding: 0.54rem;
+  width: 9.75rem;
+  height: 6rem;
+  padding: 0.27rem;
   background-color: black;
-  border-top: 0.54rem solid #737373;
-  border-right: 0.54rem solid #e5e5e5;
-  border-bottom: 0.54rem solid #e5e5e5;
-  border-left: 0.54rem solid #737373;
+  border-top: 0.27rem solid #737373;
+  border-right: 0.27rem solid #e5e5e5;
+  border-bottom: 0.27rem solid #e5e5e5;
+  border-left: 0.27rem solid #737373;
 }
 
 .bombDisplay {
   display: flex;
-  column-gap: 0.9rem;
+  column-gap: 0.45rem;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -114,7 +114,7 @@
 
 .timeDisplay {
   display: flex;
-  column-gap: 0.9rem;
+  column-gap: 0.45rem;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -128,8 +128,8 @@
 }
 
 .settings {
-  height: 8em;
   padding: 1em;
+  margin: 1em;
   background-color: #bebebe;
 }
 
@@ -138,4 +138,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+.hidden {
+  display: none !important;
 }
