@@ -7,54 +7,44 @@
 }
 
 .spCell {
-  width: 4rem;
-  height: 4rem;
+  width: 30px;
+  height: 30px;
   background: url('~/src/assets/images/icons.png') no-repeat;
-  background-size: auto 100%;
-  border-top: 0.24rem solid #737373;
+  background-size: 420px 30px;
+  border-top: 1.8px solid #737373;
   border-right: none;
   border-bottom: none;
-  border-left: 0.24rem solid #737373;
+  border-left: 1.8px solid #737373;
 }
 
 .board {
   display: grid;
   justify-content: center;
   background-color: #b2b2b2;
-  border-top: 0.36rem solid #737373;
-  border-right: 0.36rem solid #e5e5e5;
-  border-bottom: 0.36rem solid #e5e5e5;
-  border-left: 0.36rem solid #737373;
+  border-top: 2.7px solid #737373;
+  border-right: 2.7px solid #e5e5e5;
+  border-bottom: 2.7px solid #e5e5e5;
+  border-left: 2.7px solid #737373;
 }
 
 .cell {
-  width: 4rem;
-  height: 4rem;
+  width: 30px;
+  height: 30px;
   background-color: #b2b2b2;
-  border-top: 0.5rem solid #e5e5e5;
-  border-right: 0.5rem solid #737373;
-  border-bottom: 0.5rem solid #737373;
-  border-left: 0.5rem solid #e5e5e5;
+  border-top: 3.75px solid #e5e5e5;
+  border-right: 3.75px solid #737373;
+  border-bottom: 3.75px solid #737373;
+  border-left: 3.75px solid #e5e5e5;
 }
 
-/* .cell:active {
-  width: 4rem;
-  height: 4rem;
-  background-color: #b2b2b2;
-  border-top: 0.24rem solid #737373;
-  border-right: none;
-  border-bottom: none;
-  border-left: 0.24rem solid #737373;
-} */
-
 .open {
-  width: 4rem;
-  height: 4rem;
+  width: 30px;
+  height: 30px;
   background-color: #b2b2b2;
-  border-top: 0.24rem solid #737373;
+  border-top: 1.8px solid #737373;
   border-right: none;
   border-bottom: none;
-  border-left: 0.24rem solid #737373;
+  border-left: 1.8px solid #737373;
 }
 
 .outer {
@@ -125,6 +115,8 @@
   width: 100%;
   height: 100%;
   background: url('~/src/assets/images/icons.png') no-repeat;
+  object-fit: scale-down;
+  background-size: 315px 22.5px;
 }
 
 .settings {

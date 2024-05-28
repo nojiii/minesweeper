@@ -540,7 +540,7 @@ const Home = () => {
         <div
           className={styles.board}
           style={{
-            gridTemplateColumns: `repeat(${boardWidth}, 4rem)`,
+            gridTemplateColumns: `repeat(${boardWidth}, 30px)`,
           }}
         >
           {board.map((row, y) =>
@@ -558,8 +558,7 @@ const Home = () => {
                       <div
                         className={styles.flags}
                         style={{
-                          backgroundPosition: `${((11 - userInputs[y][x]) * -6) / 2}rem 0px`,
-                          backgroundSize: 'auto 100%',
+                          backgroundPosition: `${(11 - userInputs[y][x]) * -22.4}px 0px`,
                         }}
                       />
                     </div>
@@ -591,8 +590,9 @@ const Home = () => {
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={(e) => e.preventDefault()}
                     style={{
-                      backgroundPosition: `${(10 * -7.57) / 2}rem 0px`,
+                      backgroundPosition: `${10 * -30}px 0px`,
                       backgroundColor: 'red',
+                      boxSizing: 'border-box',
                     }}
                   />
                 );
@@ -601,7 +601,8 @@ const Home = () => {
                   <div
                     className={styles.spCell}
                     style={{
-                      backgroundPosition: `${((board[y][x] - 1) * -7.57) / 2}rem 0px`,
+                      backgroundPosition: `${(board[y][x] - 1) * -30}px 0px`,
+                      boxSizing: 'border-box',
                     }}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
