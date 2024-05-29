@@ -1,6 +1,22 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
+
+import faceLose from '../assets/images/face_lose.svg';
+import faceUnpressed from '../assets/images/face_unpressed.svg';
+import faceWin from '../assets/images/face_win.svg';
+
+import dH from '../assets/images/d-.svg';
+import d0 from '../assets/images/d0.svg';
+import d1 from '../assets/images/d1.svg';
+import d2 from '../assets/images/d2.svg';
+import d3 from '../assets/images/d3.svg';
+import d4 from '../assets/images/d4.svg';
+import d5 from '../assets/images/d5.svg';
+import d6 from '../assets/images/d6.svg';
+import d7 from '../assets/images/d7.svg';
+import d8 from '../assets/images/d8.svg';
+import d9 from '../assets/images/d9.svg';
 
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
@@ -72,13 +88,29 @@ const Home = () => {
       bombCount = -99;
     }
     const result: React.JSX.Element[] = [
-      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
-      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
-      <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+    ];
+    const ds: React.ImgHTMLAttributes<HTMLImageElement>[] = [
+      d0,
+      d1,
+      d2,
+      d3,
+      d4,
+      d5,
+      d6,
+      d7,
+      d8,
+      d9,
     ];
     const nums: string[] = String(bombCount).split('');
     nums.forEach((num) => {
-      result.push(<img src={`/images/d${num}.svg`} style={{ height: '100%' }} key={uuidv4()} />);
+      if (num === '-') {
+        result.push(<img src={dH.src} style={{ height: '100%' }} key={uuidv4()} />);
+      } else {
+        result.push(<img src={ds[parseInt(num)].src} style={{ height: '100%' }} key={uuidv4()} />);
+      }
       result.shift();
     });
     return result;
@@ -279,9 +311,9 @@ const Home = () => {
 
       //bombDisplayの更新
       setbombCount([
-        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
-        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
-        <img src={`/images/d0.svg`} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
       ]);
     }
   };
@@ -525,14 +557,21 @@ const Home = () => {
           <div
             className={styles.faceButton}
             onClick={() => gameReset()}
-            style={
-              gameState === 2
-                ? { backgroundImage: 'url("/images/face_win.svg")' }
-                : gameState === 3
-                  ? { backgroundImage: 'url("/images/face_lose.svg")' }
-                  : { backgroundImage: 'url("/images/face_unpressed.svg")' }
-            }
-          />
+            // style={
+            //   gameState === 2
+            //     ? { backgroundImage: 'url("../assets/images/face_win.svg")' }
+            //     : gameState === 3
+            //       ? { backgroundImage: 'url("../assets/images/face_lose.svg")' }
+            //       : { backgroundImage: 'url("../assets/images/face_unpressed.svg")' }
+            // }
+          >
+            <img
+              src={
+                gameState === 2 ? faceWin.src : gameState === 3 ? faceLose.src : faceUnpressed.src
+              }
+              style={{ height: '100%', width: '100%' }}
+            />
+          </div>
           <div className={styles.display}>
             <div className={styles.timeDisplay} />
           </div>

@@ -48,7 +48,7 @@
 }
 
 .outer {
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: #b2b2b2;
   border-top: 0.36rem solid #e5e5e5;
   border-right: 0.36rem solid #737373;
@@ -73,13 +73,13 @@
 .faceButton {
   width: 3rem;
   height: 3rem;
-  margin: 0 2rem;
+  margin: 0 1.8rem;
   background-repeat: no-repeat;
   background-size: contain;
 }
 
 .faceButton:active {
-  background-image: url('/images/face_pressed.svg') !important;
+  background-image: url('../assets/images/face_pressed.svg') !important;
 }
 
 .display {
