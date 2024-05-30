@@ -119,6 +119,13 @@ const Home = () => {
   //displayに表示されるボムの個数
   const [bombCount, setbombCount] = useState(bombCounter(userInputs, bombQuantity));
 
+  //displayに表示されるタイマー
+  const [timeCount, setTimeCount] = useState([
+    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+  ]);
+
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
   //     board.push(); // 0-8数字 11爆弾 10赤い爆弾   //   }
@@ -144,42 +151,28 @@ const Home = () => {
 
   //ゲーム開始時にbombmapを生成する関数(x, y, ^bombQuantity ^boardHeight ^boardWidth)
   const createBombMap = (x: number, y: number): number[][] => {
-    console.log('now in createBombMap()');
-    console.log('x-y:', x, '-', y);
-    console.log('bombQuantity:', bombQuantity);
-    console.log('boardHeight:', boardHeight);
-    console.log('boardWidth', boardWidth);
     const newBombMap: number[][] = Array.from({ length: boardHeight }, () =>
       Array.from({ length: boardWidth }, () => 0),
     );
 
-    console.log('newBombMap:', { ...newBombMap });
-
     //bombの個数が要素数より多いとき
     let newBombQuantity = bombQuantity;
     if (bombQuantity >= boardWidth * boardHeight) {
-      console.log('bombQuantity >= boardWidth * boardHeight');
       newBombQuantity = boardWidth * boardHeight;
       setBombQuantity(newBombQuantity);
       return Array.from({ length: boardHeight }, () => Array.from({ length: boardWidth }, () => 1));
     }
-    console.log('before for()');
     for (let i = 0; i < newBombQuantity; i++) {
-      console.log('i:', i);
-      console.log('newBombQuantity:', newBombQuantity);
       let putBomb: boolean = false;
       while (!putBomb) {
         const randY: number = Math.floor(Math.random() * boardHeight);
         const randX: number = Math.floor(Math.random() * boardWidth);
-        console.log('randX-randY', randX, '-', randY);
         if (!(randX === x && randY === y) && newBombMap[randY][randX] !== 1) {
           newBombMap[randY][randX] = 1;
-          console.log('putBomb = true');
           putBomb = true;
         }
       }
     }
-    console.log('return newBombMap:', newBombMap);
     return newBombMap;
   };
 
@@ -205,11 +198,6 @@ const Home = () => {
 
   // //x,y座標を受け取りその座標のboard,userInputsの状態を変える(x, y, ^board bombMap ^directions ^userInputs)
   const cellOpen = (x: number, y: number, bombMap: number[][]) => {
-    console.log('now in CellOpen()');
-    console.log('x-y:', x, '-', y);
-    console.log('bombMap:', bombMap);
-    console.log('board', board);
-    console.log('userInputs:', userInputs);
     //新しいboardとuserInputsを作成
     const newBoard = board.concat();
     const newUserInputs = userInputs.concat();
@@ -389,13 +377,10 @@ const Home = () => {
   };
 
   const clickHandler = (x: number, y: number) => {
-    //クリックした座標をconsoleに表示
-    console.log('クリックした座標', x, y);
-    console.log('gameState:', gameState);
+    console.log('クリックした座標=> x:', x, 'y:', y);
     //BombMapの生成&GameStateを進行中に設定
     let newBombMap: number[][] = [];
     if (gameState === 0) {
-      console.log('before createBombMap()');
       newBombMap = createBombMap(x, y);
       setBombMap(newBombMap);
 
@@ -406,14 +391,8 @@ const Home = () => {
       cellOpen(x, y, newBombMap);
     } else if (gameState === 1) {
       //cellを開く
-      console.log('before cellOpen()');
       cellOpen(x, y, bombMap);
     }
-
-    // console.log('現在のboard', board);
-    // console.log('ボムの位置のmap', bombMap);
-    // console.log('クリックした座標の周りのボムの数', checkBombAround(x, y, bombMap));
-    // console.log('UserInputs', userInputs);
   };
 
   //カスタムゲーム設定用のState
@@ -421,7 +400,6 @@ const Home = () => {
   const [initialWidth, setInitialWidth] = useState(5);
   const [initialBombQuantity, setInitialBombQuantity] = useState(5);
   const customSizeGameRefresh = () => {
-    console.log('customGameSizeRefresh');
     let newBombQuantity = initialBombQuantity;
     if (initialHeight * initialWidth <= initialBombQuantity) {
       newBombQuantity = initialHeight * initialWidth;
@@ -549,7 +527,7 @@ const Home = () => {
         </div>
         <div>{customGameState}</div>
       </div>
-      <div className={styles.outer}>
+      <div className={styles.outer} onContextMenu={(e) => e.preventDefault()}>
         <div className={styles.info} onContextMenu={(e) => e.preventDefault()}>
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
@@ -573,7 +551,7 @@ const Home = () => {
             />
           </div>
           <div className={styles.display}>
-            <div className={styles.timeDisplay} />
+            <div className={styles.timeDisplay}>{timeCount}</div>
           </div>
         </div>
         <div
