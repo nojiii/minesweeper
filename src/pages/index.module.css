@@ -78,9 +78,9 @@
   background-size: contain;
 }
 
-.faceButton:active {
+/* .faceButton:active {
   background-image: url('../assets/images/face_pressed.svg') !important;
-}
+} */
 
 .display {
   width: 4.875rem;
@@ -134,4 +134,12 @@
 
 .hidden {
   display: none !important;
+}
+
+.settingButton {
+  padding: 0.5rem;
+  color: #e5e5e5;
+  cursor: pointer;
+  background-color: #2e2e2e;
+  border: 2px solid #737373;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,6 +17,7 @@ import d6 from '../assets/images/d6.svg';
 import d7 from '../assets/images/d7.svg';
 import d8 from '../assets/images/d8.svg';
 import d9 from '../assets/images/d9.svg';
+import { isatty } from 'tty';
 
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
@@ -125,6 +126,84 @@ const Home = () => {
     <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
     <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
   ]);
+
+  const timeCounter = (time: number) => {
+    const result: React.JSX.Element[] = [
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+      <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
+    ];
+    const ds: React.ImgHTMLAttributes<HTMLImageElement>[] = [
+      d0,
+      d1,
+      d2,
+      d3,
+      d4,
+      d5,
+      d6,
+      d7,
+      d8,
+      d9,
+    ];
+    const nums: string[] = String(time).split('');
+    nums.forEach((num) => {
+      if (num === '-') {
+        result.push(<img src={dH.src} style={{ height: '100%' }} key={uuidv4()} />);
+      } else {
+        result.push(<img src={ds[parseInt(num)].src} style={{ height: '100%' }} key={uuidv4()} />);
+      }
+      result.shift();
+    });
+    return result;
+  };
+
+  //タイマー系State
+  const [time, setTime] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isActive && !isPaused) {
+      const id = setInterval(() => {
+        setTime((prevTime) => {
+          const newTime = prevTime + 1;
+          setTimeCount(timeCounter(newTime));
+          return prevTime + 1;
+        });
+        console.log('time:', time);
+      }, 1000);
+      setIntervalId(id);
+    } else if (isPaused && intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isActive, isPaused]);
+
+  const handleStart = () => {
+    setIsActive(true);
+    setIsPaused(false);
+  };
+
+  const handlePause = () => {
+    setIsPaused(true);
+  };
+
+  const handleReset = () => {
+    setTimeCount(timeCounter(0));
+    setIsActive(false);
+    setIsPaused(false);
+    setTime(0);
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  };
 
   // for (let y = 0; y < boardHeight; y++) {
   //   for (let x = 0; x < boardWidth; x++) {
@@ -268,6 +347,9 @@ const Home = () => {
     );
     setUserInputs(initialInputs);
 
+    //タイマーのリセット
+    handleReset();
+
     //bombCounterの初期化
     setbombCount(bombCounter(initialInputs, bombQuantity));
   };
@@ -297,6 +379,9 @@ const Home = () => {
       setUserInputs(newUserInputs);
       setGameState(2);
 
+      //タイマーのポーズ
+      handlePause();
+
       //bombDisplayの更新
       setbombCount([
         <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
@@ -320,6 +405,11 @@ const Home = () => {
       Array.from({ length: boardWidth }, () => 1),
     );
     setUserInputs(newUserInputs);
+
+    //タイマーのポーズ
+    handlePause();
+
+    //ゲーム状態を終了時に更新
     setGameState(3);
   };
 
@@ -327,6 +417,12 @@ const Home = () => {
   const onRightClick = (x: number, y: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     //右クリックのメニューを非表示
     e.preventDefault();
+
+    //タイマーの開始
+    if (!isActive) {
+      handleStart();
+    }
+
     const newUserInputs = userInputs.concat();
     if (newUserInputs[y][x] === 0) {
       newUserInputs[y][x] = 2;
@@ -343,6 +439,9 @@ const Home = () => {
 
   //ゲームの初期化
   const setGame = (height: number, width: number, bq: number) => {
+    //タイマーのリセット
+    handleReset();
+
     //customGameの設定の非表示
     setCustomGameState(false);
 
@@ -378,11 +477,16 @@ const Home = () => {
 
   const clickHandler = (x: number, y: number) => {
     console.log('クリックした座標=> x:', x, 'y:', y);
+
     //BombMapの生成&GameStateを進行中に設定
     let newBombMap: number[][] = [];
     if (gameState === 0) {
       newBombMap = createBombMap(x, y);
       setBombMap(newBombMap);
+
+      if (!isActive) {
+        handleStart();
+      }
 
       //GameStateをプレイ中に設定
       setGameState(1);
@@ -417,57 +521,27 @@ const Home = () => {
     }
     setGame(newHeight, newWidth, newBombQuantity);
   };
+
+  const customGameHandler = () => {
+    //タイマーのリセット
+    handleReset();
+    setCustomGameState(true);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
         <div className={styles.dificulty} style={{ display: 'flex', flexFlow: 'column' }}>
           <div style={{ display: 'flex', gap: '1em', flexWrap: 'wrap' }}>
-            <button
-              style={{
-                backgroundColor: '#2e2e2e',
-                border: '2px solid #737373',
-                color: '#e5e5e5',
-                cursor: 'pointer',
-                padding: '0.5rem',
-              }}
-              onClick={() => setGame(9, 9, 10)}
-            >
+            <button className={styles.settingButton} onClick={() => setGame(9, 9, 10)}>
               初級
             </button>
-            <button
-              style={{
-                backgroundColor: '#2e2e2e',
-                border: '2px solid #737373',
-                color: '#e5e5e5',
-                cursor: 'pointer',
-                padding: '0.5rem',
-              }}
-              onClick={() => setGame(16, 16, 40)}
-            >
+            <button className={styles.settingButton} onClick={() => setGame(16, 16, 40)}>
               中級
             </button>
-            <button
-              style={{
-                backgroundColor: '#2e2e2e',
-                border: '2px solid #737373',
-                color: '#e5e5e5',
-                cursor: 'pointer',
-                padding: '0.5rem',
-              }}
-              onClick={() => setGame(16, 30, 99)}
-            >
+            <button className={styles.settingButton} onClick={() => setGame(16, 30, 99)}>
               上級
             </button>
-            <button
-              style={{
-                backgroundColor: '#2e2e2e',
-                border: '2px solid #737373',
-                color: '#e5e5e5',
-                cursor: 'pointer',
-                padding: '0.5rem',
-              }}
-              onClick={() => setCustomGameState(true)}
-            >
+            <button className={styles.settingButton} onClick={() => customGameHandler()}>
               カスタム
             </button>
           </div>
@@ -551,7 +625,9 @@ const Home = () => {
             />
           </div>
           <div className={styles.display}>
-            <div className={styles.timeDisplay}>{timeCount}</div>
+            <div className={styles.timeDisplay} style={{ color: 'red' }}>
+              {timeCount}
+            </div>
           </div>
         </div>
         <div
