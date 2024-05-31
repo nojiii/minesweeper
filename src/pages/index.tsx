@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,7 +17,6 @@ import d6 from '../assets/images/d6.svg';
 import d7 from '../assets/images/d7.svg';
 import d8 from '../assets/images/d8.svg';
 import d9 from '../assets/images/d9.svg';
-import { isatty } from 'tty';
 
 //useStateを減らす
 //機能を全部入れる(リプレイ不要)
@@ -171,7 +170,6 @@ const Home = () => {
           setTimeCount(timeCounter(newTime));
           return prevTime + 1;
         });
-        console.log('time:', time);
       }, 1000);
       setIntervalId(id);
     } else if (isPaused && intervalId) {
@@ -522,11 +520,6 @@ const Home = () => {
     setGame(newHeight, newWidth, newBombQuantity);
   };
 
-  const customGameHandler = () => {
-    //タイマーのリセット
-    handleReset();
-    setCustomGameState(true);
-  };
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
@@ -541,7 +534,7 @@ const Home = () => {
             <button className={styles.settingButton} onClick={() => setGame(16, 30, 99)}>
               上級
             </button>
-            <button className={styles.settingButton} onClick={() => customGameHandler()}>
+            <button className={styles.settingButton} onClick={() => setCustomGameState(true)}>
               カスタム
             </button>
           </div>
