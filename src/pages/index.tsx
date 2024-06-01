@@ -119,14 +119,14 @@ const Home = () => {
   //displayに表示されるボムの個数
   const [bombCount, setbombCount] = useState(bombCounter(userInputs, bombQuantity));
 
-  //displayに表示されるタイマー
-  const [timeCount, setTimeCount] = useState([
-    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
-    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
-    <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
-  ]);
-
   const timeCounter = (time: number) => {
+    if (time >= 999) {
+      return [
+        <img src={d9.src} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={d9.src} style={{ height: '100%' }} key={uuidv4()} />,
+        <img src={d9.src} style={{ height: '100%' }} key={uuidv4()} />,
+      ];
+    }
     const result: React.JSX.Element[] = [
       <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
       <img src={d0.src} style={{ height: '100%' }} key={uuidv4()} />,
@@ -166,8 +166,6 @@ const Home = () => {
     if (isActive && !isPaused) {
       const id = setInterval(() => {
         setTime((prevTime) => {
-          const newTime = prevTime + 1;
-          setTimeCount(timeCounter(newTime));
           return prevTime + 1;
         });
       }, 1000);
@@ -181,6 +179,7 @@ const Home = () => {
         clearInterval(intervalId);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive, isPaused]);
 
   const handleStart = () => {
@@ -193,7 +192,7 @@ const Home = () => {
   };
 
   const handleReset = () => {
-    setTimeCount(timeCounter(0));
+    setTime(0);
     setIsActive(false);
     setIsPaused(false);
     setTime(0);
@@ -619,7 +618,7 @@ const Home = () => {
           </div>
           <div className={styles.display}>
             <div className={styles.timeDisplay} style={{ color: 'red' }}>
-              {timeCount}
+              {timeCounter(time)}
             </div>
           </div>
         </div>

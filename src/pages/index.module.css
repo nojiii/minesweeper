@@ -78,9 +78,9 @@
   background-size: contain;
 }
 
-/* .faceButton:active {
+.faceButton:active {
   background-image: url('../assets/images/face_pressed.svg') !important;
-} */
+}
 
 .display {
   width: 4.875rem;
