@@ -75,11 +75,26 @@
   height: 3rem;
   margin: 0 1.8rem;
   background-repeat: no-repeat;
+}
+
+.faceButton :active {
+  background-image: url('../assets/images/face_pressed.svg') !important;
   background-size: contain;
 }
 
-.faceButton:active {
-  background-image: url('../assets/images/face_pressed.svg') !important;
+.faceUnplessed {
+  background-image: url('../assets/images/face_unpressed.svg');
+  background-size: contain;
+}
+
+.faceWin {
+  background-image: url('../assets/images/face_win.svg');
+  background-size: contain;
+}
+
+.faceLose {
+  background-image: url('../assets/images/face_lose.svg');
+  background-size: contain;
 }
 
 .display {

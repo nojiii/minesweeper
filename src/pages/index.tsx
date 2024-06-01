@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
-import faceLose from '../assets/images/face_lose.svg';
-import faceUnpressed from '../assets/images/face_unpressed.svg';
-import faceWin from '../assets/images/face_win.svg';
-
 import dH from '../assets/images/d-.svg';
 import d0 from '../assets/images/d0.svg';
 import d1 from '../assets/images/d1.svg';
@@ -621,20 +617,15 @@ const Home = () => {
           <div className={styles.display}>
             <div className={styles.bombDisplay}>{bombCount}</div>
           </div>
-          <div
-            className={styles.faceButton}
-            onClick={() => gameReset()}
-            // style={
-            //   gameState === 2
-            //     ? { backgroundImage: 'url("../assets/images/face_win.svg")' }
-            //     : gameState === 3
-            //       ? { backgroundImage: 'url("../assets/images/face_lose.svg")' }
-            //       : { backgroundImage: 'url("../assets/images/face_unpressed.svg")' }
-            // }
-          >
+          <div className={styles.faceButton} onClick={() => gameReset()}>
             <img
-              src={
-                gameState === 2 ? faceWin.src : gameState === 3 ? faceLose.src : faceUnpressed.src
+              className={
+                (styles.faceButton,
+                gameState === 2
+                  ? styles.faceWin
+                  : gameState === 3
+                    ? styles.faceLose
+                    : styles.faceUnplessed)
               }
               style={{ height: '100%', width: '100%' }}
             />
