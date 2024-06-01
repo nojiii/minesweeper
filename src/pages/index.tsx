@@ -439,8 +439,8 @@ const Home = () => {
     //タイマーのリセット
     handleReset();
 
-    //customGameの設定の非表示
-    setCustomGameState(false);
+    // //customGameの設定の非表示
+    // setCustomGameState(false);
 
     //boardの大きさの変更
     setBoardHeight(height);
@@ -501,6 +501,9 @@ const Home = () => {
   const [initialWidth, setInitialWidth] = useState(5);
   const [initialBombQuantity, setInitialBombQuantity] = useState(5);
   const customSizeGameRefresh = () => {
+    //customGameの設定の非表示
+    setCustomGameState(false);
+
     let newBombQuantity = initialBombQuantity;
     if (initialHeight * initialWidth <= initialBombQuantity) {
       newBombQuantity = initialHeight * initialWidth;
@@ -519,21 +522,41 @@ const Home = () => {
     setGame(newHeight, newWidth, newBombQuantity);
   };
 
+  const customGameHandler = () => {
+    setCustomGameState(true);
+    setGame(initialHeight, initialWidth, initialBombQuantity);
+  };
+  const beginnerGameHandler = () => {
+    //customGameの設定の非表示
+    setCustomGameState(false);
+    setGame(9, 9, 10);
+  };
+  const intermediateGameHandler = () => {
+    //customGameの設定の非表示
+    setCustomGameState(false);
+    setGame(16, 16, 40);
+  };
+  const advancedGameHandler = () => {
+    //customGameの設定の非表示
+    setCustomGameState(false);
+    setGame(16, 30, 99);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.settings}>
         <div className={styles.dificulty} style={{ display: 'flex', flexFlow: 'column' }}>
           <div style={{ display: 'flex', gap: '1em', flexWrap: 'wrap' }}>
-            <button className={styles.settingButton} onClick={() => setGame(9, 9, 10)}>
+            <button className={styles.settingButton} onClick={() => beginnerGameHandler()}>
               初級
             </button>
-            <button className={styles.settingButton} onClick={() => setGame(16, 16, 40)}>
+            <button className={styles.settingButton} onClick={() => intermediateGameHandler()}>
               中級
             </button>
-            <button className={styles.settingButton} onClick={() => setGame(16, 30, 99)}>
+            <button className={styles.settingButton} onClick={() => advancedGameHandler()}>
               上級
             </button>
-            <button className={styles.settingButton} onClick={() => setCustomGameState(true)}>
+            <button className={styles.settingButton} onClick={() => customGameHandler()}>
               カスタム
             </button>
           </div>
