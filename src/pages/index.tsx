@@ -469,7 +469,7 @@ const Home = () => {
   };
 
   const clickHandler = (x: number, y: number) => {
-    console.log('クリックした座標=> x:', x, 'y:', y);
+    // console.log('クリックした座標=> x:', x, 'y:', y);
 
     //BombMapの生成&GameStateを進行中に設定
     let newBombMap: number[][] = [];
