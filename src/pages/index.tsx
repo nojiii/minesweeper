@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 import dH from '../assets/images/d-.svg';
 import d0 from '../assets/images/d0.svg';
@@ -27,29 +27,30 @@ import d9 from '../assets/images/d9.svg';
 //計算値：=>blackPoint boardから生成できる
 
 const Home = () => {
-  const images = [
-    '../assets/images/d0.svg',
-    '../assets/images/d1.svg',
-    '../assets/images/d2.svg',
-    '../assets/images/d3.svg',
-    '../assets/images/d4.svg',
-    '../assets/images/d5.svg',
-    '../assets/images/d6.svg',
-    '../assets/images/d7.svg',
-    '../assets/images/d8.svg',
-    '../assets/images/d9.svg',
-    '../assets/images/d-.svg',
-  ];
+  // const images = [
+  //   '../assets/images/d0.svg',
+  //   '../assets/images/d1.svg',
+  //   '../assets/images/d2.svg',
+  //   '../assets/images/d3.svg',
+  //   '../assets/images/d4.svg',
+  //   '../assets/images/d5.svg',
+  //   '../assets/images/d6.svg',
+  //   '../assets/images/d7.svg',
+  //   '../assets/images/d8.svg',
+  //   '../assets/images/d9.svg',
+  //   '../assets/images/d-.svg',
+  // ];
 
-  const PreloadImages = ({ imageUrls }) => {
-    return (
-      <div style={{ display: 'none' }}>
-        {imageUrls.map((url, index) => (
-          <div key={index} style={{ backgroundImage: `url(${url})` }} />
-        ))}
-      </div>
-    );
-  };
+  // const PreloadImages = ({ imageUrls }) => {
+  //   return (
+  //     <div style={{ display: 'none' }}>
+  //       {imageUrls.map((url, index) => (
+  //         <div key={index} style={{ backgroundImage: `url(${url})` }} />
+  //       ))}
+  //     </div>
+  //   );
+  // };
+
   //盤面の大きさ
   const [boardHeight, setBoardHeight] = useState(9);
   const [boardWidth, setBoardWidth] = useState(9);
@@ -564,7 +565,6 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <PreloadImages imageUrls={images} />
       <div className={styles.settings}>
         <div className={styles.dificulty} style={{ display: 'flex', flexFlow: 'column' }}>
           <div style={{ display: 'flex', gap: '1em', flexWrap: 'wrap' }}>
