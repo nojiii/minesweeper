@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import { v4 as uuidv4 } from 'uuid';
 // import Image from 'next/image';
+import { useTimeCounter } from '../hooks/useTimeCounter';
 
 import dH from '../assets/images/d-.svg';
 import d0 from '../assets/images/d0.svg';
