@@ -15,12 +15,14 @@ import d9 from '../assets/images/d9.svg';
 
 export function useTimeCounter() {
   const [time, setTime] = useState(0);
-  const intervalId = setInterval(() => {
-    setTime((prevTime) => {
-      const newTime = prevTime + 1;
-      return newTime;
-    });
-  }, 1000);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime((prevTime) => {
+        const newTime = prevTime + 1;
+        return newTime;
+      });
+    }, 1000);
+  });
   if (time >= 999) {
     return [
       <img src={d9.src} style={{ height: '100%' }} key={uuidv4()} />,
